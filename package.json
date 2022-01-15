@@ -1,0 +1,30 @@
+{
+  "name": "@agilie/firebase-chat-sdk",
+  "version": "0.0.1",
+  "description": "SDK for creating chats on the basis of Firebase",
+  "main": "build/lib/index.js",
+  "module": "build/esm/index.js",
+  "scripts": {
+    "build": "npm run build:cjs && npm run build:esm",
+    "build:cjs": "rimraf ./build/lib && tsc",
+    "build:esm": "rimraf ./build/esm && tsc --outDir build/esm --module es2015",
+    "test": "jest"
+  },
+  "keywords": [
+    "chat",
+    "firebase",
+    "sdk"
+  ],
+  "author": "Sergey Mell",
+  "license": "ISC",
+  "dependencies": {
+    "firebase": "^9.6.3"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.16.8",
+    "@babel/preset-typescript": "^7.16.7",
+    "@types/jest": "^27.4.0",
+    "jest": "^27.4.7",
+    "typescript": "^4.5.4"
+  }
+}
