@@ -1,5 +1,5 @@
 import { FirebaseOptions } from '@firebase/app';
-import { Chat } from '../src'
+import { ChatApp } from '../src'
 
 const config: FirebaseOptions = {
     // Your firebase config...
@@ -7,6 +7,6 @@ const config: FirebaseOptions = {
 
 describe("# Initialize Firebase app", () => {
     it("should initialize firebase", () => {
-        new Chat(config);
+        new ChatApp(config);
     });
 })

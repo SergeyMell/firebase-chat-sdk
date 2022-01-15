@@ -1,6 +1,7 @@
-import { initializeApp, FirebaseAppSettings, FirebaseOptions } from 'firebase/app';
+import { FirebaseAppSettings, FirebaseOptions, initializeApp } from 'firebase/app';
 
-export class Chat {
+export class ChatApp {
+
     constructor(options: FirebaseOptions, config?: FirebaseAppSettings) {
         initializeApp(options, config);
     }

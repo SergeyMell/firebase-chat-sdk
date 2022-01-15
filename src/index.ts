@@ -1,3 +1,3 @@
-export { Chat } from './chat';
-export { User } from './user';
-export { Channel } from './channel';
+export { ChatApp } from './chat-app';
+export { User } from './user/user';
+export { Channel } from './channel/channel';
