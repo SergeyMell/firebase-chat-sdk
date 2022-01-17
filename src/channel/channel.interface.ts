@@ -4,7 +4,7 @@ export type ChannelID = string | number;
 
 export interface IChannelData {
     title: string;
-    payload: Record<string, any> | null;
+    payload?: Record<string, any>;
     tags: string[];
 }
 

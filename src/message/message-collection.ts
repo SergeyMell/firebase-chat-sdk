@@ -47,13 +47,15 @@ function messageRecordToChannel(record: IMessageRecord, id: string): IMessage {
 }
 
 export async function postMessage(channel: ChannelID, sender: UserID, data: IMessageData): Promise<IMessage> {
+    // TODO: Check if channel exists
+    // TODO: Check if sender is a channel member
     const message: IMessageRecord = {
         message: data.message,
         payload: JSON.stringify(data.payload || null),
         sender: sender,
         createdAt: Date.now(),
     };
-    const newDoc = await addDoc(_collectionRef(channel), {data: message});
+    const newDoc = await addDoc(_collectionRef(channel), message);
     return messageRecordToChannel(message, newDoc.id);
 }
 

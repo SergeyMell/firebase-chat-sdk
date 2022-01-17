@@ -47,6 +47,7 @@ function channelRecordToChannel(record: IChannelRecord, id: ChannelID): IChannel
 }
 
 export async function createChannel(id: ChannelID, data: IChannelData): Promise<IChannel> {
+    // TODO: Check if channel already exists
     const tags = arrayToObject(data.tags);
     const channel: IChannelRecord = {
         title: data.title,
@@ -54,7 +55,7 @@ export async function createChannel(id: ChannelID, data: IChannelData): Promise<
         tags,
         members: []
     };
-    await setDoc(_docRef(id), {data: channel});
+    await setDoc(_docRef(id), channel);
     return channelRecordToChannel(channel, id);
 }
 
@@ -67,7 +68,7 @@ export async function getChannel(id: ChannelID): Promise<IChannel | null> {
     return channelRecordToChannel(channel, doc.id);
 }
 
-export async function findByTags(tags: string[] = [], take = 10, after?: DocumentSnapshot) {
+export async function findChannelsByTags(tags: string[] = [], take = 10, after?: DocumentSnapshot) {
     const queryConstraints = [
         limit(take)
     ];
@@ -76,13 +77,13 @@ export async function findByTags(tags: string[] = [], take = 10, after?: Documen
     }
     for (const tag of tags) {
         queryConstraints.push(
-            where(tag, '==', true)
+            where(`tags.${tag}`, '==', true)
         )
     }
     return _findByQuery(queryConstraints);
 }
 
-export async function findByUser(userId: UserID, tags: string[] = [], take = 10, after?: DocumentSnapshot) {
+export async function findChannelsByUser(userId: UserID, tags: string[] = [], take = 10, after?: DocumentSnapshot) {
     const queryConstraints = [
         where('members', 'array-contains', userId),
         limit(take)
@@ -92,7 +93,7 @@ export async function findByUser(userId: UserID, tags: string[] = [], take = 10,
     }
     for (const tag of tags) {
         queryConstraints.push(
-            where(tag, '==', true)
+            where(`tags.${tag}`, '==', true)
         )
     }
     return _findByQuery(queryConstraints);

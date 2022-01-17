@@ -2,7 +2,7 @@ import { UserID } from '../user/user.interface';
 
 export interface IMessageData {
     message: string;
-    payload: Record<string, any> | null;
+    payload?: Record<string, any>;
 }
 
 export interface IMessageRecord {
