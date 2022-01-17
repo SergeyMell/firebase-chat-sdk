@@ -14,72 +14,97 @@ import {
     startAfter,
     where,
 } from 'firebase/firestore';
-import { Channel, ChannelID, IChannel, IChannelData } from './channel';
-import { UserID } from '../user/user';
+import { ChannelID, IChannel, IChannelData, IChannelRecord } from './channel.interface';
+import { docWithId } from '../_utils/firebase-snapshot.utils';
+import { UserID } from '../user/user.interface';
+import { arrayToObject, objectToArray } from '../_utils/array.utils';
 
-export class ChannelCollection {
-    static collectionPath = '/channels';
+const _collectionPath = '/channels';
 
-    private static get collectionRef(): CollectionReference {
-        const db = getFirestore();
-        return collection(db, ChannelCollection.collectionPath);
+function _collectionRef(): CollectionReference {
+    const db = getFirestore();
+    return collection(db, _collectionPath);
+}
+
+export function _docRef(id: ChannelID): DocumentReference {
+    const db = getFirestore();
+    return doc(db, `${_collectionPath}/${id}`);
+}
+
+function channelRecordToChannel(record: IChannelRecord, id: ChannelID): IChannel {
+    let payload = null;
+    try {
+        payload = JSON.parse(record.payload || 'null');
+    } catch {
     }
+    return {
+        id: id,
+        title: record.title,
+        payload: payload,
+        tags: objectToArray(record.tags),
+        members: record.members
+    };
+}
 
-    static async create(id: ChannelID, data: IChannelData): Promise<IChannel> {
-        await setDoc(ChannelCollection.docRef(id), {data});
-        return Object.assign({id: id}, data);
+export async function createChannel(id: ChannelID, data: IChannelData): Promise<IChannel> {
+    const tags = arrayToObject(data.tags);
+    const channel: IChannelRecord = {
+        title: data.title,
+        payload: JSON.stringify(data.payload || null),
+        tags,
+        members: []
+    };
+    await setDoc(_docRef(id), {data: channel});
+    return channelRecordToChannel(channel, id);
+}
+
+export async function getChannel(id: ChannelID): Promise<IChannel | null> {
+    const doc = await getDoc(_docRef(id));
+    if (!doc.exists()) {
+        return null;
     }
+    const channel: IChannelRecord = docWithId(doc);
+    return channelRecordToChannel(channel, doc.id);
+}
 
-    static async get(id: ChannelID): Promise<Channel | null> {
-        const doc = await getDoc(this.docRef(id));
-        if (!doc.exists()) {
-            return null;
-        }
-        return new Channel(doc.id, doc.data() as IChannelData);
+export async function findByTags(tags: string[] = [], take = 10, after?: DocumentSnapshot) {
+    const queryConstraints = [
+        limit(take)
+    ];
+    if (after) {
+        queryConstraints.push(startAfter(after));
     }
-
-    static async findByTags(tags: string[] = [], take = 10, after?: DocumentSnapshot) {
-        const queryConstraints = [
-            limit(take)
-        ];
-        if (after) {
-            queryConstraints.push(startAfter(after));
-        }
-        if (tags.length === 1) {
-            const tag = tags[0];
-            queryConstraints.push(where('tags', 'array-contains', tag));
-        } else if (tags.length > 1) {
-            queryConstraints.push(where('tags', 'array-contains-any', tags));
-        }
-        return ChannelCollection.findByQuery(queryConstraints);
-    }
-
-    static async findByUser(userId: UserID, take = 10, after?: DocumentSnapshot) {
-        const queryConstraints = [
-            where('members', 'array-contains', userId),
-            limit(take)
-        ];
-        if (after) {
-            queryConstraints.push(startAfter(after));
-        }
+    for (const tag of tags) {
         queryConstraints.push(
-            where('title', '==', 'Channel 1'),
-            where('payload', '==', '{"hello":"World"}')
+            where(tag, '==', true)
         )
-        return ChannelCollection.findByQuery(queryConstraints);
     }
+    return _findByQuery(queryConstraints);
+}
 
-    protected static docRef(id: ChannelID): DocumentReference {
-        const db = getFirestore();
-        return doc(db, `${ChannelCollection.collectionPath}/${id}`);
+export async function findByUser(userId: UserID, tags: string[] = [], take = 10, after?: DocumentSnapshot) {
+    const queryConstraints = [
+        where('members', 'array-contains', userId),
+        limit(take)
+    ];
+    if (after) {
+        queryConstraints.push(startAfter(after));
     }
+    for (const tag of tags) {
+        queryConstraints.push(
+            where(tag, '==', true)
+        )
+    }
+    return _findByQuery(queryConstraints);
+}
 
-    private static async findByQuery(queryConstraints: QueryConstraint[]) {
-        const q = query(ChannelCollection.collectionRef, ...queryConstraints);
-        const docs = await getDocs(q).then(response => response.docs);
-        return {
-            channels: docs.map(d => new Channel(d.id, d.data() as IChannelData)),
-            next: docs[docs.length - 1],
-        };
-    }
+
+async function _findByQuery(queryConstraints: QueryConstraint[]) {
+    const q = query(_collectionRef(), ...queryConstraints);
+    const docs = await getDocs(q).then(response => response.docs);
+    return {
+        // @ts-ignore
+        channels: docs.map(docWithId).map(doc => channelRecordToChannel(doc, doc.id)),
+        next: docs[docs.length - 1],
+    };
 }

@@ -1,34 +1,32 @@
 import { doc, DocumentReference, getDoc, getFirestore, setDoc } from 'firebase/firestore';
-import { IProfile, User, UserID } from './user';
+import type { IUser, IUserData, UserID } from './user.interface';
+import { docWithId } from '../_utils/firebase-snapshot.utils';
 
-export class UserCollection {
+const _collectionPath = '/users';
 
-    static collectionPath = '/users';
+function _docRef(id: UserID): DocumentReference {
+    const db = getFirestore();
+    return doc(db, `${_collectionPath}/${id}`);
+}
 
-    protected static docRef(id: UserID): DocumentReference {
-        const db = getFirestore();
-        return doc(db, `${UserCollection.collectionPath}/${id}`);
+export async function _findOrCreateUser(id: UserID, name: string): Promise<IUser> {
+    const user = await _findUser(id);
+    if (user) {
+        return user;
     }
+    return _createUser(id, name);
+}
 
-    protected static async findOrCreate(id: UserID, name: string): Promise<User> {
-        const user = await this.find(id);
-        if (user) {
-            return user;
-        }
-        return this.create(id, name);
+async function _findUser(id: UserID): Promise<IUser | null> {
+    const doc = await getDoc(_docRef(id));
+    if (!doc.exists()) {
+        return null;
     }
+    return docWithId<IUser>(doc);
+}
 
-    private static async find(id: UserID): Promise<User | null> {
-        const doc = await getDoc(UserCollection.docRef(id));
-        if (!doc.exists()) {
-            return null;
-        }
-        return new User(id, doc.data().name);
-    }
-
-    private static async create(id: UserID, name: string): Promise<User> {
-        const data: IProfile = {name};
-        await setDoc(UserCollection.docRef(id), data);
-        return new User(id, name);
-    }
+async function _createUser(id: UserID, name: string): Promise<IUser> {
+    const data: IUserData = {name};
+    await setDoc(_docRef(id), data);
+    return Object.assign({id}, data);
 }
