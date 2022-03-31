@@ -1,4 +1,5 @@
 import { UserID } from '../user/user.interface';
+export declare type MessageID = string;
 export interface IMessageData {
     message: string;
     payload?: Record<string, any>;

@@ -43,7 +43,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 };
-import { addDoc, collection, doc, getDocs, getFirestore, limit, orderBy, query, startAfter } from 'firebase/firestore';
+import { addDoc, collection, doc, getDocs, getFirestore, limit, orderBy, query, startAfter, setDoc, } from 'firebase/firestore';
 import { docWithId } from '../_utils/firebase-snapshot.utils';
 function _collectionPath(channelId) {
     return "/channels/".concat(channelId, "/messages");
@@ -56,8 +56,13 @@ function _collectionRef(channelId) {
     var db = getFirestore();
     return collection(db, _collectionPath(channelId));
 }
+function _messageRef(channelId, messageId) {
+    var db = getFirestore();
+    return doc(db, "".concat(_collectionPath(channelId), "/").concat(messageId));
+}
 function messageRecordToChannel(record, id) {
     var payload = null;
+    _collectionRef;
     try {
         payload = JSON.parse(record.payload || 'null');
     }
@@ -114,6 +119,26 @@ export function getMessages(channel, take, after) {
                             messages: docs.map(docWithId).map(function (doc) { return messageRecordToChannel(doc, doc.id); }),
                             next: docs[docs.length - 1],
                         }];
+            }
+        });
+    });
+}
+export function updateMessage(channelId, messageId, sender, data) {
+    return __awaiter(this, void 0, void 0, function () {
+        var message;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    message = {
+                        message: data.message,
+                        payload: JSON.stringify(data.payload || null),
+                        sender: sender,
+                        createdAt: Date.now(),
+                    };
+                    return [4 /*yield*/, setDoc(_messageRef(channelId, messageId), message)];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/, messageRecordToChannel(message, messageId)];
             }
         });
     });

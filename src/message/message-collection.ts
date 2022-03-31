@@ -10,9 +10,10 @@ import {
     limit,
     orderBy,
     query,
-    startAfter
+    startAfter,
+    setDoc,
 } from 'firebase/firestore';
-import { IMessage, IMessageData, IMessageRecord } from './message.interface';
+import {IMessage, IMessageData, IMessageRecord, MessageID} from './message.interface';
 import { ChannelID } from '../channel/channel.interface';
 import { UserID } from '../user/user.interface';
 import { docWithId } from '../_utils/firebase-snapshot.utils';
@@ -31,8 +32,13 @@ function _collectionRef(channelId: ChannelID): CollectionReference {
     return collection(db, _collectionPath(channelId));
 }
 
+function _messageRef(channelId: ChannelID, messageId: MessageID): DocumentReference {
+    const db = getFirestore();
+    return doc(db, `${_collectionPath(channelId)}/${messageId}`);
+}
+
 function messageRecordToChannel(record: IMessageRecord, id: string): IMessage {
-    let payload = null;
+    let payload = null;_collectionRef
     try {
         payload = JSON.parse(record.payload || 'null');
     } catch {
@@ -74,4 +80,15 @@ export async function getMessages(channel: ChannelID, take: number = 10, after?:
         messages: docs.map(docWithId).map(doc => messageRecordToChannel(doc, doc.id)),
         next: docs[docs.length - 1],
     };
+}
+
+export async function updateMessage(channelId: ChannelID, messageId: MessageID, sender: UserID, data: IMessageData): Promise<IMessage> {
+    const message: IMessageRecord = {
+        message: data.message,
+        payload: JSON.stringify(data.payload || null),
+        sender: sender,
+        createdAt: Date.now(),
+    };
+    await setDoc(_messageRef(channelId, messageId), message);
+    return messageRecordToChannel(message, messageId);
 }
