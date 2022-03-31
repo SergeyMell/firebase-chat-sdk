@@ -43,7 +43,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 };
-import { addDoc, collection, doc, getDocs, getFirestore, limit, orderBy, query, startAfter, setDoc, } from 'firebase/firestore';
+import { addDoc, collection, doc, getDocs, getFirestore, limit, orderBy, query, startAfter, setDoc } from 'firebase/firestore';
 import { docWithId } from '../_utils/firebase-snapshot.utils';
 function _collectionPath(channelId) {
     return "/channels/".concat(channelId, "/messages");
@@ -62,7 +62,6 @@ function _messageRef(channelId, messageId) {
 }
 function messageRecordToChannel(record, id) {
     var payload = null;
-    _collectionRef;
     try {
         payload = JSON.parse(record.payload || 'null');
     }
