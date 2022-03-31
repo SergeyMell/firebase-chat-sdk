@@ -11,9 +11,9 @@ import {
     orderBy,
     query,
     startAfter,
-    setDoc,
+    setDoc
 } from 'firebase/firestore';
-import {IMessage, IMessageData, IMessageRecord, MessageID} from './message.interface';
+import { IMessage, IMessageData, IMessageRecord, MessageID } from './message.interface';
 import { ChannelID } from '../channel/channel.interface';
 import { UserID } from '../user/user.interface';
 import { docWithId } from '../_utils/firebase-snapshot.utils';
@@ -38,7 +38,7 @@ function _messageRef(channelId: ChannelID, messageId: MessageID): DocumentRefere
 }
 
 function messageRecordToChannel(record: IMessageRecord, id: string): IMessage {
-    let payload = null;_collectionRef
+    let payload = null;
     try {
         payload = JSON.parse(record.payload || 'null');
     } catch {

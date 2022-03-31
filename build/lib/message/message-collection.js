@@ -65,7 +65,6 @@ function _messageRef(channelId, messageId) {
 }
 function messageRecordToChannel(record, id) {
     var payload = null;
-    _collectionRef;
     try {
         payload = JSON.parse(record.payload || 'null');
     }
