@@ -45,7 +45,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     return to.concat(ar || Array.prototype.slice.call(from));
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMessages = exports.postMessage = void 0;
+exports.updateMessage = exports.getMessages = exports.postMessage = void 0;
 var firestore_1 = require("firebase/firestore");
 var firebase_snapshot_utils_1 = require("../_utils/firebase-snapshot.utils");
 function _collectionPath(channelId) {
@@ -59,8 +59,13 @@ function _collectionRef(channelId) {
     var db = (0, firestore_1.getFirestore)();
     return (0, firestore_1.collection)(db, _collectionPath(channelId));
 }
+function _messageRef(channelId, messageId) {
+    var db = (0, firestore_1.getFirestore)();
+    return (0, firestore_1.doc)(db, "".concat(_collectionPath(channelId), "/").concat(messageId));
+}
 function messageRecordToChannel(record, id) {
     var payload = null;
+    _collectionRef;
     try {
         payload = JSON.parse(record.payload || 'null');
     }
@@ -123,3 +128,24 @@ function getMessages(channel, take, after) {
     });
 }
 exports.getMessages = getMessages;
+function updateMessage(channelId, messageId, sender, data) {
+    return __awaiter(this, void 0, void 0, function () {
+        var message;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    message = {
+                        message: data.message,
+                        payload: JSON.stringify(data.payload || null),
+                        sender: sender,
+                        createdAt: Date.now(),
+                    };
+                    return [4 /*yield*/, (0, firestore_1.setDoc)(_messageRef(channelId, messageId), message)];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/, messageRecordToChannel(message, messageId)];
+            }
+        });
+    });
+}
+exports.updateMessage = updateMessage;
