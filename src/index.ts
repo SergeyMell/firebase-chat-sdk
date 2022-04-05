@@ -3,3 +3,4 @@ export { connectUser } from './user/user';
 export { addUserToChannel, removeUserFromChannel } from './channel/channel';
 export { createChannel, getChannel, findChannelsByTags, findChannelsByUser } from './channel/channel-collection';
 export { postMessage, getMessages, updateMessage } from './message/message-collection';
+export { postMedia, getMedia } from './media/media-collection';
