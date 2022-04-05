@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateMessage = exports.getMessages = exports.postMessage = exports.findChannelsByUser = exports.findChannelsByTags = exports.getChannel = exports.createChannel = exports.removeUserFromChannel = exports.addUserToChannel = exports.connectUser = exports.initChatApp = void 0;
+exports.getMedia = exports.postMedia = exports.updateMessage = exports.getMessages = exports.postMessage = exports.findChannelsByUser = exports.findChannelsByTags = exports.getChannel = exports.createChannel = exports.removeUserFromChannel = exports.addUserToChannel = exports.connectUser = exports.initChatApp = void 0;
 var chat_app_1 = require("./chat-app");
 Object.defineProperty(exports, "initChatApp", { enumerable: true, get: function () { return chat_app_1.initChatApp; } });
 var user_1 = require("./user/user");
@@ -17,3 +17,6 @@ var message_collection_1 = require("./message/message-collection");
 Object.defineProperty(exports, "postMessage", { enumerable: true, get: function () { return message_collection_1.postMessage; } });
 Object.defineProperty(exports, "getMessages", { enumerable: true, get: function () { return message_collection_1.getMessages; } });
 Object.defineProperty(exports, "updateMessage", { enumerable: true, get: function () { return message_collection_1.updateMessage; } });
+var media_collection_1 = require("./media/media-collection");
+Object.defineProperty(exports, "postMedia", { enumerable: true, get: function () { return media_collection_1.postMedia; } });
+Object.defineProperty(exports, "getMedia", { enumerable: true, get: function () { return media_collection_1.getMedia; } });
