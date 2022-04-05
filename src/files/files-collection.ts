@@ -12,6 +12,7 @@ import {
 } from 'firebase/firestore';
 import { FileID, IFile } from './files.interface';
 import { DocumentReference } from '@firebase/firestore';
+import {docWithId} from '../_utils/firebase-snapshot.utils';
 
 function _collectionPath(channelId: ChannelID, fileId: FileID): string {
     return `/channels/${channelId}/files/${fileId}`;
@@ -40,5 +41,6 @@ export async function getFiles(channelId: ChannelID, after?: DocumentSnapshot) {
         queryConstraints.push(startAfter(after));
     }
     const q = query(_collectionRef(channelId), ...queryConstraints);
-    return await getDocs(q).then(response => response.docs);
+    const docs = await getDocs(q).then(response => response.docs);
+    return docs.map(docWithId);
 }
