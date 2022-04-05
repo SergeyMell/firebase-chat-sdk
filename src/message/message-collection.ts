@@ -11,9 +11,10 @@ import {
     orderBy,
     query,
     startAfter,
-    setDoc
+    updateDoc,
+    getDoc
 } from 'firebase/firestore';
-import { IMessage, IMessageData, IMessageRecord, MessageID } from './message.interface';
+import {IMessage, IMessageData, IMessageRecord, MessageID} from './message.interface';
 import { ChannelID } from '../channel/channel.interface';
 import { UserID } from '../user/user.interface';
 import { docWithId } from '../_utils/firebase-snapshot.utils';
@@ -82,13 +83,8 @@ export async function getMessages(channel: ChannelID, take: number = 10, after?:
     };
 }
 
-export async function updateMessage(channelId: ChannelID, messageId: MessageID, sender: UserID, data: IMessageData): Promise<IMessage> {
-    const message: IMessageRecord = {
-        message: data.message,
-        payload: JSON.stringify(data.payload || null),
-        sender: sender,
-        createdAt: Date.now(),
-    };
-    await setDoc(_messageRef(channelId, messageId), message);
-    return messageRecordToChannel(message, messageId);
+export async function updateMessage(channelId: ChannelID, messageId: MessageID, sender: UserID, data: IMessageData): Promise<DocumentSnapshot> {
+    const payload = JSON.stringify(data.payload || null);
+    await updateDoc(_messageRef(channelId, messageId), 'payload', payload);
+    return getDoc(_messageRef(channelId, messageId));
 }
