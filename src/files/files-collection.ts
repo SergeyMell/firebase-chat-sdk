@@ -1,4 +1,4 @@
-import {ChannelID} from '../channel/channel.interface';
+import { ChannelID } from '../channel/channel.interface';
 import {
     setDoc,
     doc,
