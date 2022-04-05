@@ -47,6 +47,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getFiles = exports.postFile = void 0;
 var firestore_1 = require("firebase/firestore");
+var firebase_snapshot_utils_1 = require("../_utils/firebase-snapshot.utils");
 function _collectionPath(channelId, fileId) {
     return "/channels/".concat(channelId, "/files/").concat(fileId);
 }
@@ -73,7 +74,7 @@ function postFile(channelId, fileId, file) {
 exports.postFile = postFile;
 function getFiles(channelId, after) {
     return __awaiter(this, void 0, void 0, function () {
-        var queryConstraints, q;
+        var queryConstraints, q, docs;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -85,7 +86,9 @@ function getFiles(channelId, after) {
                     }
                     q = firestore_1.query.apply(void 0, __spreadArray([_collectionRef(channelId)], queryConstraints, false));
                     return [4 /*yield*/, (0, firestore_1.getDocs)(q).then(function (response) { return response.docs; })];
-                case 1: return [2 /*return*/, _a.sent()];
+                case 1:
+                    docs = _a.sent();
+                    return [2 /*return*/, docs.map(firebase_snapshot_utils_1.docWithId)];
             }
         });
     });
