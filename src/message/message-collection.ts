@@ -14,7 +14,7 @@ import {
     updateDoc,
     getDoc
 } from 'firebase/firestore';
-import {IMessage, IMessageData, IMessageRecord, MessageID} from './message.interface';
+import { IMessage, IMessageData, IMessageRecord, MessageID } from './message.interface';
 import { ChannelID } from '../channel/channel.interface';
 import { UserID } from '../user/user.interface';
 import { docWithId } from '../_utils/firebase-snapshot.utils';
