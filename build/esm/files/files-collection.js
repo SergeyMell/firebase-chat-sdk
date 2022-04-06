@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -44,102 +43,49 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateMessage = exports.getMessages = exports.postMessage = void 0;
-var firestore_1 = require("firebase/firestore");
-var firebase_snapshot_utils_1 = require("../_utils/firebase-snapshot.utils");
-function _collectionPath(channelId) {
-    return "/channels/".concat(channelId, "/messages");
+import { setDoc, doc, getDocs, getFirestore, orderBy, query, startAfter, collection } from 'firebase/firestore';
+import { docWithId } from '../_utils/firebase-snapshot.utils';
+function _collectionPath(channelId, fileId) {
+    return "/channels/".concat(channelId, "/files/").concat(fileId);
 }
-function _docRef(channelId, messageId) {
-    var db = (0, firestore_1.getFirestore)();
-    return (0, firestore_1.doc)(db, "".concat(_collectionPath(channelId), "/").concat(messageId));
+function _docRef(channelId, fileId) {
+    var db = getFirestore();
+    return doc(db, _collectionPath(channelId, fileId));
 }
 function _collectionRef(channelId) {
-    var db = (0, firestore_1.getFirestore)();
-    return (0, firestore_1.collection)(db, _collectionPath(channelId));
+    var db = getFirestore();
+    return collection(db, _collectionPath(channelId, ''));
 }
-function _messageRef(channelId, messageId) {
-    var db = (0, firestore_1.getFirestore)();
-    return (0, firestore_1.doc)(db, "".concat(_collectionPath(channelId), "/").concat(messageId));
-}
-function messageRecordToChannel(record, id) {
-    var payload = null;
-    try {
-        payload = JSON.parse(record.payload || 'null');
-    }
-    catch (_a) {
-    }
-    return {
-        id: id,
-        message: record.message,
-        payload: payload,
-        createdAt: record.createdAt,
-        sender: record.sender,
-    };
-}
-function postMessage(channel, sender, data) {
+export function postFile(channelId, fileId, file) {
     return __awaiter(this, void 0, void 0, function () {
-        var message, newDoc;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0:
-                    message = {
-                        message: data.message,
-                        payload: JSON.stringify(data.payload || null),
-                        sender: sender,
-                        createdAt: Date.now(),
-                    };
-                    return [4 /*yield*/, (0, firestore_1.addDoc)(_collectionRef(channel), message)];
+                case 0: return [4 /*yield*/, setDoc(_docRef(channelId, fileId), file)];
                 case 1:
-                    newDoc = _a.sent();
-                    return [2 /*return*/, messageRecordToChannel(message, newDoc.id)];
+                    _a.sent();
+                    return [2 /*return*/, file];
             }
         });
     });
 }
-exports.postMessage = postMessage;
-function getMessages(channel, take, after) {
-    if (take === void 0) { take = 10; }
+export function getFiles(channelId, after) {
     return __awaiter(this, void 0, void 0, function () {
         var queryConstraints, q, docs;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     queryConstraints = [
-                        (0, firestore_1.limit)(take),
-                        (0, firestore_1.orderBy)('createdAt', 'desc')
+                        orderBy('createdAt', 'desc')
                     ];
                     if (after) {
-                        queryConstraints.push((0, firestore_1.startAfter)(after));
+                        queryConstraints.push(startAfter(after));
                     }
-                    q = firestore_1.query.apply(void 0, __spreadArray([_collectionRef(channel)], queryConstraints, false));
-                    return [4 /*yield*/, (0, firestore_1.getDocs)(q).then(function (response) { return response.docs; })];
+                    q = query.apply(void 0, __spreadArray([_collectionRef(channelId)], queryConstraints, false));
+                    return [4 /*yield*/, getDocs(q).then(function (response) { return response.docs; })];
                 case 1:
                     docs = _a.sent();
-                    return [2 /*return*/, {
-                            // @ts-ignore
-                            messages: docs.map(firebase_snapshot_utils_1.docWithId).map(function (doc) { return messageRecordToChannel(doc, doc.id); }),
-                            next: docs[docs.length - 1],
-                        }];
+                    return [2 /*return*/, docs.map(docWithId)];
             }
         });
     });
 }
-exports.getMessages = getMessages;
-function updateMessage(channelId, messageId, sender, data) {
-    return __awaiter(this, void 0, void 0, function () {
-        var payload;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    payload = JSON.stringify(data.payload || null);
-                    return [4 /*yield*/, (0, firestore_1.updateDoc)(_messageRef(channelId, messageId), 'payload', payload)];
-                case 1:
-                    _a.sent();
-                    return [2 /*return*/, (0, firestore_1.getDoc)(_messageRef(channelId, messageId))];
-            }
-        });
-    });
-}
-exports.updateMessage = updateMessage;
