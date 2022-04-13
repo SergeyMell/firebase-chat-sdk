@@ -43,7 +43,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 };
-import { collection, doc, getDoc, getDocs, getFirestore, limit, query, setDoc, startAfter, where, } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, getFirestore, limit, onSnapshot, query, setDoc, startAfter, where, } from 'firebase/firestore';
 import { docWithId } from '../_utils/firebase-snapshot.utils';
 import { arrayToObject, objectToArray } from '../_utils/array.utils';
 var _collectionPath = '/channels';
@@ -165,6 +165,29 @@ function _findByQuery(queryConstraints) {
                             next: docs[docs.length - 1],
                         }];
             }
+        });
+    });
+}
+export function subscribeChannel(callback) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            return [2 /*return*/, onSnapshot(_collectionRef(), function (channelData) {
+                    var channels = [];
+                    // Check that this is not the first snapshot request, but adding a new document to the listener
+                    if (channelData.docs.length !== channelData.docChanges().length) {
+                        // @ts-ignore
+                        channels = channelData.docChanges().map(function (docData) { return docData.doc; }).map(docWithId).map(function (doc) { return channelRecordToChannel(doc, doc.id); });
+                    }
+                    callback(channels, channelData);
+                })];
+        });
+    });
+}
+export function unsubscribeChannel(unsubscribe) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            unsubscribe();
+            return [2 /*return*/];
         });
     });
 }

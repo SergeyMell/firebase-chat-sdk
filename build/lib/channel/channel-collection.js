@@ -45,7 +45,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     return to.concat(ar || Array.prototype.slice.call(from));
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.findChannelsByUser = exports.findChannelsByTags = exports.getChannel = exports.createChannel = exports._docRef = void 0;
+exports.unsubscribeChannel = exports.subscribeChannel = exports.findChannelsByUser = exports.findChannelsByTags = exports.getChannel = exports.createChannel = exports._docRef = void 0;
 var firestore_1 = require("firebase/firestore");
 var firebase_snapshot_utils_1 = require("../_utils/firebase-snapshot.utils");
 var array_utils_1 = require("../_utils/array.utils");
@@ -176,3 +176,28 @@ function _findByQuery(queryConstraints) {
         });
     });
 }
+function subscribeChannel(callback) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            return [2 /*return*/, (0, firestore_1.onSnapshot)(_collectionRef(), function (channelData) {
+                    var channels = [];
+                    // Check that this is not the first snapshot request, but adding a new document to the listener
+                    if (channelData.docs.length !== channelData.docChanges().length) {
+                        // @ts-ignore
+                        channels = channelData.docChanges().map(function (docData) { return docData.doc; }).map(firebase_snapshot_utils_1.docWithId).map(function (doc) { return channelRecordToChannel(doc, doc.id); });
+                    }
+                    callback(channels, channelData);
+                })];
+        });
+    });
+}
+exports.subscribeChannel = subscribeChannel;
+function unsubscribeChannel(unsubscribe) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            unsubscribe();
+            return [2 /*return*/];
+        });
+    });
+}
+exports.unsubscribeChannel = unsubscribeChannel;
