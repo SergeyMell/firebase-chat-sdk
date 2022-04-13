@@ -1,15 +1,15 @@
 import {
     collection,
     CollectionReference,
-    doc,
+    doc, DocumentData,
     DocumentReference,
     DocumentSnapshot,
     getDoc,
     getDocs,
     getFirestore,
-    limit,
+    limit, onSnapshot,
     query,
-    QueryConstraint,
+    QueryConstraint, QuerySnapshot,
     setDoc,
     startAfter,
     where,
@@ -18,6 +18,8 @@ import { ChannelID, IChannel, IChannelData, IChannelRecord } from './channel.int
 import { docWithId } from '../_utils/firebase-snapshot.utils';
 import { UserID } from '../user/user.interface';
 import { arrayToObject, objectToArray } from '../_utils/array.utils';
+import firebase from 'firebase/compat';
+import Unsubscribe = firebase.Unsubscribe;
 
 const _collectionPath = '/channels';
 
@@ -108,4 +110,20 @@ async function _findByQuery(queryConstraints: QueryConstraint[]) {
         channels: docs.map(docWithId).map(doc => channelRecordToChannel(doc, doc.id)),
         next: docs[docs.length - 1],
     };
+}
+
+export async function subscribeChannel(callback: (channels: IChannel[], channelData: QuerySnapshot<DocumentData>) => void): Promise<Unsubscribe> {
+    return onSnapshot(_collectionRef(), (channelData) => {
+        let channels: IChannel[] = [];
+        // Check that this is not the first snapshot request, but adding a new document to the listener
+        if (channelData.docs.length !== channelData.docChanges().length) {
+            // @ts-ignore
+            channels = channelData.docChanges().map(docData => docData.doc).map(docWithId).map(doc => channelRecordToChannel(doc, doc.id));
+        }
+        callback(channels, channelData);
+    });
+}
+
+export async function unsubscribeChannel(unsubscribe: Unsubscribe): Promise<void> {
+    unsubscribe();
 }
