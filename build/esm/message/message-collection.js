@@ -123,8 +123,10 @@ export function subscribeMessage(channelId, callback) {
         var db;
         return __generator(this, function (_a) {
             db = getFirestore();
-            return [2 /*return*/, onSnapshot(collection(db, _collectionPath(channelId)), function (doc) {
-                    callback(doc);
+            return [2 /*return*/, onSnapshot(collection(db, _collectionPath(channelId)), function (docsData) {
+                    // @ts-ignore
+                    var docs = docsData.docChanges().map(function (docData) { return docData.doc; }).map(docWithId).map(function (doc) { return messageRecordToChannel(doc, doc.id); });
+                    callback(docs);
                 })];
         });
     });

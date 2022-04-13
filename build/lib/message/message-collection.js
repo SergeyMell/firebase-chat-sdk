@@ -128,8 +128,10 @@ function subscribeMessage(channelId, callback) {
         var db;
         return __generator(this, function (_a) {
             db = (0, firestore_1.getFirestore)();
-            return [2 /*return*/, (0, firestore_1.onSnapshot)((0, firestore_1.collection)(db, _collectionPath(channelId)), function (doc) {
-                    callback(doc);
+            return [2 /*return*/, (0, firestore_1.onSnapshot)((0, firestore_1.collection)(db, _collectionPath(channelId)), function (docsData) {
+                    // @ts-ignore
+                    var docs = docsData.docChanges().map(function (docData) { return docData.doc; }).map(firebase_snapshot_utils_1.docWithId).map(function (doc) { return messageRecordToChannel(doc, doc.id); });
+                    callback(docs);
                 })];
         });
     });
