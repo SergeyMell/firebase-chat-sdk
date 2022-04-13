@@ -43,7 +43,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 };
-import { addDoc, collection, doc, getDocs, getFirestore, limit, orderBy, query, startAfter, updateDoc, getDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, getDocs, getFirestore, limit, orderBy, query, startAfter, onSnapshot } from 'firebase/firestore';
 import { docWithId } from '../_utils/firebase-snapshot.utils';
 function _collectionPath(channelId) {
     return "/channels/".concat(channelId, "/messages");
@@ -55,10 +55,6 @@ function _docRef(channelId, messageId) {
 function _collectionRef(channelId) {
     var db = getFirestore();
     return collection(db, _collectionPath(channelId));
-}
-function _messageRef(channelId, messageId) {
-    var db = getFirestore();
-    return doc(db, "".concat(_collectionPath(channelId), "/").concat(messageId));
 }
 function messageRecordToChannel(record, id) {
     var payload = null;
@@ -122,18 +118,22 @@ export function getMessages(channel, take, after) {
         });
     });
 }
-export function updateMessage(channelId, messageId, sender, data) {
+export function subscribeMessage(channelId, callback) {
     return __awaiter(this, void 0, void 0, function () {
-        var payload;
+        var db;
         return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    payload = JSON.stringify(data.payload || null);
-                    return [4 /*yield*/, updateDoc(_messageRef(channelId, messageId), 'payload', payload)];
-                case 1:
-                    _a.sent();
-                    return [2 /*return*/, getDoc(_messageRef(channelId, messageId))];
-            }
+            db = getFirestore();
+            return [2 /*return*/, onSnapshot(doc(db, _collectionPath(channelId)), function (doc) {
+                    callback(doc);
+                })];
+        });
+    });
+}
+export function unsubscribeMessage(unsubscribe) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            unsubscribe();
+            return [2 /*return*/];
         });
     });
 }

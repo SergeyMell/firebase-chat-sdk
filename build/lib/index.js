@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getFiles = exports.postFile = exports.updateMessage = exports.getMessages = exports.postMessage = exports.findChannelsByUser = exports.findChannelsByTags = exports.getChannel = exports.createChannel = exports.removeUserFromChannel = exports.addUserToChannel = exports.connectUser = exports.initChatApp = void 0;
+exports.unsubscribeMessage = exports.subscribeMessage = exports.getMessages = exports.postMessage = exports.findChannelsByUser = exports.findChannelsByTags = exports.getChannel = exports.createChannel = exports.removeUserFromChannel = exports.addUserToChannel = exports.connectUser = exports.initChatApp = void 0;
 var chat_app_1 = require("./chat-app");
 Object.defineProperty(exports, "initChatApp", { enumerable: true, get: function () { return chat_app_1.initChatApp; } });
 var user_1 = require("./user/user");
@@ -16,7 +16,5 @@ Object.defineProperty(exports, "findChannelsByUser", { enumerable: true, get: fu
 var message_collection_1 = require("./message/message-collection");
 Object.defineProperty(exports, "postMessage", { enumerable: true, get: function () { return message_collection_1.postMessage; } });
 Object.defineProperty(exports, "getMessages", { enumerable: true, get: function () { return message_collection_1.getMessages; } });
-Object.defineProperty(exports, "updateMessage", { enumerable: true, get: function () { return message_collection_1.updateMessage; } });
-var files_collection_1 = require("./files/files-collection");
-Object.defineProperty(exports, "postFile", { enumerable: true, get: function () { return files_collection_1.postFile; } });
-Object.defineProperty(exports, "getFiles", { enumerable: true, get: function () { return files_collection_1.getFiles; } });
+Object.defineProperty(exports, "subscribeMessage", { enumerable: true, get: function () { return message_collection_1.subscribeMessage; } });
+Object.defineProperty(exports, "unsubscribeMessage", { enumerable: true, get: function () { return message_collection_1.unsubscribeMessage; } });
