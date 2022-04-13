@@ -82,8 +82,12 @@ export async function getMessages(channel: ChannelID, take: number = 10, after?:
 export async function subscribeMessage(channelId: ChannelID, callback: (arg0: IMessage[]) => void): Promise<Unsubscribe> {
     const db = getFirestore();
     return onSnapshot(collection(db, _collectionPath(channelId)), (docsData) => {
-        // @ts-ignore
-        const docs = docsData.docChanges().map(docData => docData.doc).map(docWithId).map(doc => messageRecordToChannel(doc, doc.id));
+        const docs: IMessage[] = [];
+        // Check that this is not the first snapshot request, but adding a new document to the listener
+        if (docsData.docs.length !== docsData.docChanges().length) {
+            // @ts-ignore
+            const docs = docsData.docChanges().map(docData => docData.doc).map(docWithId).map(doc => messageRecordToChannel(doc, doc.id));
+        }
         callback(docs);
     });
 }

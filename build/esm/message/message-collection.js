@@ -124,8 +124,12 @@ export function subscribeMessage(channelId, callback) {
         return __generator(this, function (_a) {
             db = getFirestore();
             return [2 /*return*/, onSnapshot(collection(db, _collectionPath(channelId)), function (docsData) {
-                    // @ts-ignore
-                    var docs = docsData.docChanges().map(function (docData) { return docData.doc; }).map(docWithId).map(function (doc) { return messageRecordToChannel(doc, doc.id); });
+                    var docs = [];
+                    // Check that this is not the first snapshot request, but adding a new document to the listener
+                    if (docsData.docs.length !== docsData.docChanges().length) {
+                        // @ts-ignore
+                        var docs_1 = docsData.docChanges().map(function (docData) { return docData.doc; }).map(docWithId).map(function (doc) { return messageRecordToChannel(doc, doc.id); });
+                    }
                     callback(docs);
                 })];
         });
