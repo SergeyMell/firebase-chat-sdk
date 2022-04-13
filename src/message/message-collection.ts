@@ -11,15 +11,16 @@ import {
     orderBy,
     query,
     startAfter,
-    onSnapshot
+    onSnapshot,
+    DocumentData,
+    QuerySnapshot
 } from 'firebase/firestore';
-import { IMessage, IMessageData, IMessageRecord } from './message.interface';
-import { ChannelID } from '../channel/channel.interface';
-import { UserID } from '../user/user.interface';
-import { docWithId } from '../_utils/firebase-snapshot.utils';
+import {IMessage, IMessageData, IMessageRecord} from './message.interface';
+import {ChannelID} from '../channel/channel.interface';
+import {UserID} from '../user/user.interface';
+import {docWithId} from '../_utils/firebase-snapshot.utils';
 import firebase from 'firebase/compat';
 import Unsubscribe = firebase.Unsubscribe;
-import DocumentData = firebase.firestore.DocumentData;
 
 function _collectionPath(channelId: ChannelID): string {
     return `/channels/${channelId}/messages`;
@@ -80,9 +81,9 @@ export async function getMessages(channel: ChannelID, take: number = 10, after?:
     };
 }
 
-export async function subscribeMessage(channelId: ChannelID, callback: (arg0: DocumentSnapshot<DocumentData>) => void): Promise<Unsubscribe> {
+export async function subscribeMessage(channelId: ChannelID, callback: (arg0: QuerySnapshot<DocumentData>) => void): Promise<Unsubscribe> {
     const db = getFirestore();
-    return onSnapshot(doc(db, _collectionPath(channelId)), (doc) => {
+    return onSnapshot(collection(db, _collectionPath(channelId)), (doc) => {
         callback(doc);
     });
 }

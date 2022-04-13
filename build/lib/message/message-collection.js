@@ -128,7 +128,7 @@ function subscribeMessage(channelId, callback) {
         var db;
         return __generator(this, function (_a) {
             db = (0, firestore_1.getFirestore)();
-            return [2 /*return*/, (0, firestore_1.onSnapshot)((0, firestore_1.doc)(db, _collectionPath(channelId)), function (doc) {
+            return [2 /*return*/, (0, firestore_1.onSnapshot)((0, firestore_1.collection)(db, _collectionPath(channelId)), function (doc) {
                     callback(doc);
                 })];
         });
