@@ -11,12 +11,14 @@ import {
     orderBy,
     query,
     startAfter,
-    onSnapshot
+    onSnapshot,
+    DocumentData,
+    QuerySnapshot
 } from 'firebase/firestore';
-import { IMessage, IMessageData, IMessageRecord } from './message.interface';
-import { ChannelID } from '../channel/channel.interface';
-import { UserID } from '../user/user.interface';
-import { docWithId } from '../_utils/firebase-snapshot.utils';
+import {IMessage, IMessageData, IMessageRecord} from './message.interface';
+import {ChannelID} from '../channel/channel.interface';
+import {UserID} from '../user/user.interface';
+import {docWithId} from '../_utils/firebase-snapshot.utils';
 import firebase from 'firebase/compat';
 import Unsubscribe = firebase.Unsubscribe;
 
@@ -79,16 +81,16 @@ export async function getMessages(channel: ChannelID, take: number = 10, after?:
     };
 }
 
-export async function subscribeMessage(channelId: ChannelID, callback: (arg0: IMessage[]) => void): Promise<Unsubscribe> {
+export async function subscribeMessage(channelId: ChannelID, callback: (docs: IMessage[], docsData: QuerySnapshot<DocumentData>) => void): Promise<Unsubscribe> {
     const db = getFirestore();
     return onSnapshot(collection(db, _collectionPath(channelId)), (docsData) => {
-        const docs: IMessage[] = [];
+        let docs: IMessage[] = [];
         // Check that this is not the first snapshot request, but adding a new document to the listener
         if (docsData.docs.length !== docsData.docChanges().length) {
             // @ts-ignore
-            const docs = docsData.docChanges().map(docData => docData.doc).map(docWithId).map(doc => messageRecordToChannel(doc, doc.id));
+            docs = docsData.docChanges().map(docData => docData.doc).map(docWithId).map(doc => messageRecordToChannel(doc, doc.id));
         }
-        callback(docs);
+        callback(docs, docsData);
     });
 }
 

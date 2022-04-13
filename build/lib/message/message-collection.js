@@ -133,9 +133,9 @@ function subscribeMessage(channelId, callback) {
                     // Check that this is not the first snapshot request, but adding a new document to the listener
                     if (docsData.docs.length !== docsData.docChanges().length) {
                         // @ts-ignore
-                        var docs_1 = docsData.docChanges().map(function (docData) { return docData.doc; }).map(firebase_snapshot_utils_1.docWithId).map(function (doc) { return messageRecordToChannel(doc, doc.id); });
+                        docs = docsData.docChanges().map(function (docData) { return docData.doc; }).map(firebase_snapshot_utils_1.docWithId).map(function (doc) { return messageRecordToChannel(doc, doc.id); });
                     }
-                    callback(docs);
+                    callback(docs, docsData);
                 })];
         });
     });
