@@ -11,13 +11,15 @@ import {
     orderBy,
     query,
     startAfter,
-    updateDoc,
-    getDoc
+    onSnapshot
 } from 'firebase/firestore';
-import { IMessage, IMessageData, IMessageRecord, MessageID } from './message.interface';
+import { IMessage, IMessageData, IMessageRecord } from './message.interface';
 import { ChannelID } from '../channel/channel.interface';
 import { UserID } from '../user/user.interface';
 import { docWithId } from '../_utils/firebase-snapshot.utils';
+import firebase from 'firebase/compat';
+import Unsubscribe = firebase.Unsubscribe;
+import DocumentData = firebase.firestore.DocumentData;
 
 function _collectionPath(channelId: ChannelID): string {
     return `/channels/${channelId}/messages`;
@@ -31,11 +33,6 @@ function _docRef(channelId: ChannelID, messageId: string): DocumentReference {
 function _collectionRef(channelId: ChannelID): CollectionReference {
     const db = getFirestore();
     return collection(db, _collectionPath(channelId));
-}
-
-function _messageRef(channelId: ChannelID, messageId: MessageID): DocumentReference {
-    const db = getFirestore();
-    return doc(db, `${_collectionPath(channelId)}/${messageId}`);
 }
 
 function messageRecordToChannel(record: IMessageRecord, id: string): IMessage {
@@ -83,8 +80,13 @@ export async function getMessages(channel: ChannelID, take: number = 10, after?:
     };
 }
 
-export async function updateMessage(channelId: ChannelID, messageId: MessageID, sender: UserID, data: IMessageData): Promise<DocumentSnapshot> {
-    const payload = JSON.stringify(data.payload || null);
-    await updateDoc(_messageRef(channelId, messageId), 'payload', payload);
-    return getDoc(_messageRef(channelId, messageId));
+export async function subscribeMessage(channelId: ChannelID, callback: (arg0: DocumentSnapshot<DocumentData>) => void): Promise<Unsubscribe> {
+    const db = getFirestore();
+    return onSnapshot(doc(db, _collectionPath(channelId)), (doc) => {
+        callback(doc);
+    });
+}
+
+export async function unsubscribeMessage(unsubscribe: Unsubscribe): Promise<void> {
+    unsubscribe();
 }
