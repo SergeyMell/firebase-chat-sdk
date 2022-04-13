@@ -123,7 +123,7 @@ export function subscribeMessage(channelId, callback) {
         var db;
         return __generator(this, function (_a) {
             db = getFirestore();
-            return [2 /*return*/, onSnapshot(doc(db, _collectionPath(channelId)), function (doc) {
+            return [2 /*return*/, onSnapshot(collection(db, _collectionPath(channelId)), function (doc) {
                     callback(doc);
                 })];
         });
