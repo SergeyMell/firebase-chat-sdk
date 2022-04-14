@@ -130,7 +130,7 @@ export function subscribeMessage(channelId, callback) {
                         // @ts-ignore
                         docs = docsData.docChanges().map(function (docData) { return docData.doc; }).map(docWithId).map(function (doc) { return messageRecordToChannel(doc, doc.id); });
                     }
-                    callback(docs, docsData);
+                    callback(docs);
                 })];
         });
     });

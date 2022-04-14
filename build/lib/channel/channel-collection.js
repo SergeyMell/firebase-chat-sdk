@@ -186,7 +186,7 @@ function subscribeChannel(callback) {
                         // @ts-ignore
                         channels = channelData.docChanges().map(function (docData) { return docData.doc; }).map(firebase_snapshot_utils_1.docWithId).map(function (doc) { return channelRecordToChannel(doc, doc.id); });
                     }
-                    callback(channels, channelData);
+                    callback(channels);
                 })];
         });
     });

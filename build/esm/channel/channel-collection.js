@@ -178,7 +178,7 @@ export function subscribeChannel(callback) {
                         // @ts-ignore
                         channels = channelData.docChanges().map(function (docData) { return docData.doc; }).map(docWithId).map(function (doc) { return channelRecordToChannel(doc, doc.id); });
                     }
-                    callback(channels, channelData);
+                    callback(channels);
                 })];
         });
     });
