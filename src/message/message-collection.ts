@@ -81,7 +81,7 @@ export async function getMessages(channel: ChannelID, take: number = 10, after?:
     };
 }
 
-export async function subscribeMessage(channelId: ChannelID, callback: (docs: IMessage[], docsData: QuerySnapshot<DocumentData>) => void): Promise<Unsubscribe> {
+export async function subscribeMessage(channelId: ChannelID, callback: (docs: IMessage[]) => void): Promise<Unsubscribe> {
     const db = getFirestore();
     return onSnapshot(collection(db, _collectionPath(channelId)), (docsData) => {
         let docs: IMessage[] = [];
@@ -90,7 +90,7 @@ export async function subscribeMessage(channelId: ChannelID, callback: (docs: IM
             // @ts-ignore
             docs = docsData.docChanges().map(docData => docData.doc).map(docWithId).map(doc => messageRecordToChannel(doc, doc.id));
         }
-        callback(docs, docsData);
+        callback(docs);
     });
 }
 

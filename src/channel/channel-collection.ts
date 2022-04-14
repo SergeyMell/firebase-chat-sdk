@@ -112,7 +112,7 @@ async function _findByQuery(queryConstraints: QueryConstraint[]) {
     };
 }
 
-export async function subscribeChannel(callback: (channels: IChannel[], channelData: QuerySnapshot<DocumentData>) => void): Promise<Unsubscribe> {
+export async function subscribeChannel(callback: (channels: IChannel[]) => void): Promise<Unsubscribe> {
     return onSnapshot(_collectionRef(), (channelData) => {
         let channels: IChannel[] = [];
         // Check that this is not the first snapshot request, but adding a new document to the listener
@@ -120,7 +120,7 @@ export async function subscribeChannel(callback: (channels: IChannel[], channelD
             // @ts-ignore
             channels = channelData.docChanges().map(docData => docData.doc).map(docWithId).map(doc => channelRecordToChannel(doc, doc.id));
         }
-        callback(channels, channelData);
+        callback(channels);
     });
 }
 
