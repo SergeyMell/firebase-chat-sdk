@@ -43,7 +43,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 };
-import { collection, doc, getDoc, getDocs, getFirestore, limit, onSnapshot, query, setDoc, updateDoc, startAfter, where, } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, getFirestore, limit, onSnapshot, query, setDoc, startAfter, where, } from 'firebase/firestore';
 import { docWithId } from '../_utils/firebase-snapshot.utils';
 import { arrayToObject, objectToArray } from '../_utils/array.utils';
 var _collectionPath = '/channels';
@@ -84,27 +84,6 @@ export function createChannel(id, data) {
                         members: []
                     };
                     return [4 /*yield*/, setDoc(_docRef(id), channel)];
-                case 1:
-                    _a.sent();
-                    return [2 /*return*/, channelRecordToChannel(channel, id)];
-            }
-        });
-    });
-}
-export function updateChannel(id, data) {
-    return __awaiter(this, void 0, void 0, function () {
-        var tags, channel;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    tags = arrayToObject(data.tags);
-                    channel = {
-                        title: data.title,
-                        payload: JSON.stringify(data.payload || null),
-                        tags: tags,
-                        members: data.members
-                    };
-                    return [4 /*yield*/, updateDoc(_docRef(id), { payload: data.payload })];
                 case 1:
                     _a.sent();
                     return [2 /*return*/, channelRecordToChannel(channel, id)];

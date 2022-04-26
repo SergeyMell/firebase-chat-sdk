@@ -64,3 +64,17 @@ export function removeUserFromChannel(channelId, userId) {
         });
     });
 }
+export function updateChannel(channelId, payload) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, updateDoc(_docRef(channelId), {
+                        payload: payload
+                    })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    });
+}

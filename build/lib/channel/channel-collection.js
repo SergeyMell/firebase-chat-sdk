@@ -45,7 +45,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     return to.concat(ar || Array.prototype.slice.call(from));
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.unsubscribeChannel = exports.subscribeChannel = exports.findChannelsByUser = exports.findChannelsByTags = exports.getChannel = exports.updateChannel = exports.createChannel = exports._docRef = void 0;
+exports.unsubscribeChannel = exports.subscribeChannel = exports.findChannelsByUser = exports.findChannelsByTags = exports.getChannel = exports.createChannel = exports._docRef = void 0;
 var firestore_1 = require("firebase/firestore");
 var firebase_snapshot_utils_1 = require("../_utils/firebase-snapshot.utils");
 var array_utils_1 = require("../_utils/array.utils");
@@ -96,28 +96,6 @@ function createChannel(id, data) {
     });
 }
 exports.createChannel = createChannel;
-function updateChannel(id, data) {
-    return __awaiter(this, void 0, void 0, function () {
-        var tags, channel;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    tags = (0, array_utils_1.arrayToObject)(data.tags);
-                    channel = {
-                        title: data.title,
-                        payload: JSON.stringify(data.payload || null),
-                        tags: tags,
-                        members: data.members
-                    };
-                    return [4 /*yield*/, (0, firestore_1.updateDoc)(_docRef(id), { payload: data.payload })];
-                case 1:
-                    _a.sent();
-                    return [2 /*return*/, channelRecordToChannel(channel, id)];
-            }
-        });
-    });
-}
-exports.updateChannel = updateChannel;
 function getChannel(id) {
     return __awaiter(this, void 0, void 0, function () {
         var doc, channel;
