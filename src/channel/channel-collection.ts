@@ -9,8 +9,9 @@ import {
     getFirestore,
     limit, onSnapshot,
     query,
-    QueryConstraint, QuerySnapshot,
+    QueryConstraint,
     setDoc,
+    updateDoc,
     startAfter,
     where,
 } from 'firebase/firestore';
@@ -58,6 +59,18 @@ export async function createChannel(id: ChannelID, data: IChannelData): Promise<
         members: []
     };
     await setDoc(_docRef(id), channel);
+    return channelRecordToChannel(channel, id);
+}
+
+export async function updateChannel(id: ChannelID, data: IChannel): Promise<IChannel> {
+    const tags = arrayToObject(data.tags);
+    const channel: IChannelRecord = {
+        title: data.title,
+        payload: JSON.stringify(data.payload || null),
+        tags,
+        members: data.members
+    };
+    await updateDoc(_docRef(id), { payload: data.payload });
     return channelRecordToChannel(channel, id);
 }
 

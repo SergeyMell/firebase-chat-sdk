@@ -5,6 +5,7 @@ import firebase from 'firebase/compat';
 import Unsubscribe = firebase.Unsubscribe;
 export declare function _docRef(id: ChannelID): DocumentReference;
 export declare function createChannel(id: ChannelID, data: IChannelData): Promise<IChannel>;
+export declare function updateChannel(id: ChannelID, data: IChannel): Promise<IChannel>;
 export declare function getChannel(id: ChannelID): Promise<IChannel | null>;
 export declare function findChannelsByTags(tags?: string[], take?: number, after?: DocumentSnapshot): Promise<{
     channels: IChannel[];

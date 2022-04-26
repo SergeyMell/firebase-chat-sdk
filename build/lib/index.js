@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.unsubscribeMessage = exports.subscribeMessage = exports.getMessages = exports.postMessage = exports.unsubscribeChannel = exports.subscribeChannel = exports.findChannelsByUser = exports.findChannelsByTags = exports.getChannel = exports.createChannel = exports.removeUserFromChannel = exports.addUserToChannel = exports.connectUser = exports.initChatApp = void 0;
+exports.unsubscribeMessage = exports.subscribeMessage = exports.getMessages = exports.postMessage = exports.unsubscribeChannel = exports.subscribeChannel = exports.findChannelsByUser = exports.findChannelsByTags = exports.getChannel = exports.updateChannel = exports.createChannel = exports.removeUserFromChannel = exports.addUserToChannel = exports.connectUser = exports.initChatApp = void 0;
 var chat_app_1 = require("./chat-app");
 Object.defineProperty(exports, "initChatApp", { enumerable: true, get: function () { return chat_app_1.initChatApp; } });
 var user_1 = require("./user/user");
@@ -10,6 +10,7 @@ Object.defineProperty(exports, "addUserToChannel", { enumerable: true, get: func
 Object.defineProperty(exports, "removeUserFromChannel", { enumerable: true, get: function () { return channel_1.removeUserFromChannel; } });
 var channel_collection_1 = require("./channel/channel-collection");
 Object.defineProperty(exports, "createChannel", { enumerable: true, get: function () { return channel_collection_1.createChannel; } });
+Object.defineProperty(exports, "updateChannel", { enumerable: true, get: function () { return channel_collection_1.updateChannel; } });
 Object.defineProperty(exports, "getChannel", { enumerable: true, get: function () { return channel_collection_1.getChannel; } });
 Object.defineProperty(exports, "findChannelsByTags", { enumerable: true, get: function () { return channel_collection_1.findChannelsByTags; } });
 Object.defineProperty(exports, "findChannelsByUser", { enumerable: true, get: function () { return channel_collection_1.findChannelsByUser; } });
