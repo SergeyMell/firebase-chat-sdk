@@ -1,6 +1,6 @@
 import { _docRef } from './channel-collection';
 import { arrayRemove, arrayUnion, updateDoc } from 'firebase/firestore';
-import { ChannelID } from './channel.interface';
+import { ChannelID, IChannel } from './channel.interface';
 import { UserID } from '../user/user.interface';
 
 export async function addUserToChannel(channelId: ChannelID, userId: UserID): Promise<void> {
@@ -12,5 +12,11 @@ export async function addUserToChannel(channelId: ChannelID, userId: UserID): Pr
 export async function removeUserFromChannel(channelId: ChannelID, userId: UserID): Promise<void> {
     await updateDoc(_docRef(channelId), {
         members: arrayRemove(userId)
+    });
+}
+
+export async function updateChannel(channelId: ChannelID, payload: Promise<IChannel>): Promise<void> {
+    await updateDoc(_docRef(channelId), {
+        payload
     });
 }

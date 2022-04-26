@@ -1,7 +1,7 @@
 import {
     collection,
     CollectionReference,
-    doc, DocumentData,
+    doc,
     DocumentReference,
     DocumentSnapshot,
     getDoc,
@@ -9,7 +9,7 @@ import {
     getFirestore,
     limit, onSnapshot,
     query,
-    QueryConstraint, QuerySnapshot,
+    QueryConstraint,
     setDoc,
     startAfter,
     where,
