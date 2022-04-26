@@ -15,7 +15,7 @@ export async function removeUserFromChannel(channelId: ChannelID, userId: UserID
     });
 }
 
-export async function updateChannel(channelId: ChannelID, payload: IChannel): Promise<void> {
+export async function updateChannel(channelId: ChannelID, payload: Record<string, boolean>): Promise<void> {
     await updateDoc(_docRef(channelId), {
         payload
     });
