@@ -1,4 +1,4 @@
-import { DocumentReference, DocumentSnapshot, QuerySnapshot, DocumentData } from 'firebase/firestore';
+import { DocumentReference, DocumentSnapshot, QuerySnapshot } from 'firebase/firestore';
 import { ChannelID, IChannel, IChannelData } from './channel.interface';
 import { UserID } from '../user/user.interface';
 import firebase from 'firebase/compat';
@@ -8,11 +8,11 @@ export declare function createChannel(id: ChannelID, data: IChannelData): Promis
 export declare function getChannel(id: ChannelID): Promise<IChannel | null>;
 export declare function findChannelsByTags(tags?: string[], take?: number, after?: DocumentSnapshot): Promise<{
     channels: IChannel[];
-    next: import("@firebase/firestore").QueryDocumentSnapshot<DocumentData>;
+    next: import("@firebase/firestore").QueryDocumentSnapshot<import("@firebase/firestore").DocumentData>;
 }>;
 export declare function findChannelsByUser(userId: UserID, tags?: string[], take?: number, after?: DocumentSnapshot): Promise<{
     channels: IChannel[];
-    next: import("@firebase/firestore").QueryDocumentSnapshot<DocumentData>;
+    next: import("@firebase/firestore").QueryDocumentSnapshot<import("@firebase/firestore").DocumentData>;
 }>;
 export declare function subscribeChannel(callback: (channels: IChannel[], channelData: QuerySnapshot) => void): Promise<Unsubscribe>;
 export declare function unsubscribeChannel(unsubscribe: Unsubscribe): Promise<void>;

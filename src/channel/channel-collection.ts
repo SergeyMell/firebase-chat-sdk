@@ -13,8 +13,7 @@ import {
     setDoc,
     startAfter,
     where,
-    QuerySnapshot,
-    DocumentData
+    QuerySnapshot
 } from 'firebase/firestore';
 import { ChannelID, IChannel, IChannelData, IChannelRecord } from './channel.interface';
 import { docWithId } from '../_utils/firebase-snapshot.utils';
