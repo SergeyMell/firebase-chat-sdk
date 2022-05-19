@@ -69,13 +69,14 @@ function removeUserFromChannel(channelId, userId) {
     });
 }
 exports.removeUserFromChannel = removeUserFromChannel;
-function updateChannel(channelId, payload) {
+function updateChannel(channelId, payload, updatedAt) {
     return __awaiter(this, void 0, void 0, function () {
+        var data;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, (0, firestore_1.updateDoc)((0, channel_collection_1._docRef)(channelId), {
-                        payload: payload
-                    })];
+                case 0:
+                    data = updatedAt ? { payload: payload, updatedAt: updatedAt } : { payload: payload };
+                    return [4 /*yield*/, (0, firestore_1.updateDoc)((0, channel_collection_1._docRef)(channelId), data)];
                 case 1:
                     _a.sent();
                     return [2 /*return*/];
