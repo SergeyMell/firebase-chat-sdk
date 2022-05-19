@@ -64,13 +64,14 @@ export function removeUserFromChannel(channelId, userId) {
         });
     });
 }
-export function updateChannel(channelId, payload) {
+export function updateChannel(channelId, payload, updatedAt) {
     return __awaiter(this, void 0, void 0, function () {
+        var data;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, updateDoc(_docRef(channelId), {
-                        payload: payload
-                    })];
+                case 0:
+                    data = updatedAt ? { payload: payload, updatedAt: updatedAt } : { payload: payload };
+                    return [4 /*yield*/, updateDoc(_docRef(channelId), data)];
                 case 1:
                     _a.sent();
                     return [2 /*return*/];

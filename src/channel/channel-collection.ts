@@ -13,7 +13,7 @@ import {
     setDoc,
     startAfter,
     where,
-    QuerySnapshot
+    QuerySnapshot, orderBy
 } from 'firebase/firestore';
 import { ChannelID, IChannel, IChannelData, IChannelRecord } from './channel.interface';
 import { docWithId } from '../_utils/firebase-snapshot.utils';
@@ -45,7 +45,8 @@ function channelRecordToChannel(record: IChannelRecord, id: ChannelID): IChannel
         title: record.title,
         payload: payload,
         tags: objectToArray(record.tags),
-        members: record.members
+        members: record.members,
+        updatedAt: record.updatedAt
     };
 }
 
@@ -56,7 +57,8 @@ export async function createChannel(id: ChannelID, data: IChannelData): Promise<
         title: data.title,
         payload: JSON.stringify(data.payload || null),
         tags,
-        members: []
+        members: [],
+        updatedAt: Date.now(),
     };
     await setDoc(_docRef(id), channel);
     return channelRecordToChannel(channel, id);
@@ -73,7 +75,8 @@ export async function getChannel(id: ChannelID): Promise<IChannel | null> {
 
 export async function findChannelsByTags(tags: string[] = [], take = 10, after?: DocumentSnapshot) {
     const queryConstraints = [
-        limit(take)
+        limit(take),
+        orderBy('updatedAt', 'desc')
     ];
     if (after) {
         queryConstraints.push(startAfter(after));
@@ -89,7 +92,8 @@ export async function findChannelsByTags(tags: string[] = [], take = 10, after?:
 export async function findChannelsByUser(userId: UserID, tags: string[] = [], take = 10, after?: DocumentSnapshot) {
     const queryConstraints = [
         where('members', 'array-contains', userId),
-        limit(take)
+        limit(take),
+        orderBy('updatedAt', 'desc')
     ];
     if (after) {
         queryConstraints.push(startAfter(after));

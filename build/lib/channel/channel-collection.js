@@ -71,7 +71,8 @@ function channelRecordToChannel(record, id) {
         title: record.title,
         payload: payload,
         tags: (0, array_utils_1.objectToArray)(record.tags),
-        members: record.members
+        members: record.members,
+        updatedAt: record.updatedAt
     };
 }
 function createChannel(id, data) {
@@ -85,7 +86,8 @@ function createChannel(id, data) {
                         title: data.title,
                         payload: JSON.stringify(data.payload || null),
                         tags: tags,
-                        members: []
+                        members: [],
+                        updatedAt: Date.now(),
                     };
                     return [4 /*yield*/, (0, firestore_1.setDoc)(_docRef(id), channel)];
                 case 1:
@@ -121,7 +123,8 @@ function findChannelsByTags(tags, take, after) {
         var queryConstraints, _i, tags_1, tag;
         return __generator(this, function (_a) {
             queryConstraints = [
-                (0, firestore_1.limit)(take)
+                (0, firestore_1.limit)(take),
+                (0, firestore_1.orderBy)('updatedAt', 'desc')
             ];
             if (after) {
                 queryConstraints.push((0, firestore_1.startAfter)(after));
@@ -143,7 +146,8 @@ function findChannelsByUser(userId, tags, take, after) {
         return __generator(this, function (_a) {
             queryConstraints = [
                 (0, firestore_1.where)('members', 'array-contains', userId),
-                (0, firestore_1.limit)(take)
+                (0, firestore_1.limit)(take),
+                (0, firestore_1.orderBy)('updatedAt', 'desc')
             ];
             if (after) {
                 queryConstraints.push((0, firestore_1.startAfter)(after));

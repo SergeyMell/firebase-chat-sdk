@@ -43,7 +43,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 };
-import { collection, doc, getDoc, getDocs, getFirestore, limit, onSnapshot, query, setDoc, startAfter, where } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, getFirestore, limit, onSnapshot, query, setDoc, startAfter, where, orderBy } from 'firebase/firestore';
 import { docWithId } from '../_utils/firebase-snapshot.utils';
 import { arrayToObject, objectToArray } from '../_utils/array.utils';
 var _collectionPath = '/channels';
@@ -67,7 +67,8 @@ function channelRecordToChannel(record, id) {
         title: record.title,
         payload: payload,
         tags: objectToArray(record.tags),
-        members: record.members
+        members: record.members,
+        updatedAt: record.updatedAt
     };
 }
 export function createChannel(id, data) {
@@ -81,7 +82,8 @@ export function createChannel(id, data) {
                         title: data.title,
                         payload: JSON.stringify(data.payload || null),
                         tags: tags,
-                        members: []
+                        members: [],
+                        updatedAt: Date.now(),
                     };
                     return [4 /*yield*/, setDoc(_docRef(id), channel)];
                 case 1:
@@ -115,7 +117,8 @@ export function findChannelsByTags(tags, take, after) {
         var queryConstraints, _i, tags_1, tag;
         return __generator(this, function (_a) {
             queryConstraints = [
-                limit(take)
+                limit(take),
+                orderBy('updatedAt', 'desc')
             ];
             if (after) {
                 queryConstraints.push(startAfter(after));
@@ -136,7 +139,8 @@ export function findChannelsByUser(userId, tags, take, after) {
         return __generator(this, function (_a) {
             queryConstraints = [
                 where('members', 'array-contains', userId),
-                limit(take)
+                limit(take),
+                orderBy('updatedAt', 'desc')
             ];
             if (after) {
                 queryConstraints.push(startAfter(after));
