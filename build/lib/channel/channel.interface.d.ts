@@ -4,7 +4,6 @@ export interface IChannelData {
     title: string;
     payload?: Record<string, any>;
     tags: string[];
-    updatedAt: number;
 }
 export interface IChannelRecord {
     title: string;
