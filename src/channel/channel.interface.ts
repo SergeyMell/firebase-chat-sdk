@@ -6,7 +6,6 @@ export interface IChannelData {
     title: string;
     payload?: Record<string, any>;
     tags: string[];
-    updatedAt: number;
 }
 
 export interface IChannelRecord {
@@ -20,4 +19,5 @@ export interface IChannelRecord {
 export interface IChannel extends IChannelData {
     id: ChannelID;
     members: UserID[];
+    updatedAt: number;
 }
