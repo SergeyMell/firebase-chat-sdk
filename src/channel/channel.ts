@@ -15,7 +15,7 @@ export async function removeUserFromChannel(channelId: ChannelID, userId: UserID
     });
 }
 
-export async function updateChannel(channelId: ChannelID, payload: string, updatedAt: number): Promise<void> {
+export async function updateChannel(channelId: ChannelID, payload: string, updatedAt?: number): Promise<void> {
     const data = updatedAt ? { payload, updatedAt } : { payload };
     await updateDoc(_docRef(channelId), data);
 }
