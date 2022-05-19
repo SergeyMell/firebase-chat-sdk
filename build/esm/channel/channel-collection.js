@@ -68,7 +68,6 @@ function channelRecordToChannel(record, id) {
         payload: payload,
         tags: objectToArray(record.tags),
         members: record.members,
-        updatedAt: record.updatedAt
     };
 }
 export function createChannel(id, data) {

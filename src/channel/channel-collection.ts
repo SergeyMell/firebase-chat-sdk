@@ -46,7 +46,6 @@ function channelRecordToChannel(record: IChannelRecord, id: ChannelID): IChannel
         payload: payload,
         tags: objectToArray(record.tags),
         members: record.members,
-        updatedAt: record.updatedAt
     };
 }
 

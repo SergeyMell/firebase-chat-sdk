@@ -19,5 +19,4 @@ export interface IChannelRecord {
 export interface IChannel extends IChannelData {
     id: ChannelID;
     members: UserID[];
-    updatedAt: number;
 }
