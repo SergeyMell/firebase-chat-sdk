@@ -115,16 +115,19 @@ function getChannel(id) {
     });
 }
 exports.getChannel = getChannel;
-function findChannelsByTags(tags, take, after) {
+function findChannelsByTags(tags, take, sortByLastUpdate, after) {
     if (tags === void 0) { tags = []; }
     if (take === void 0) { take = 10; }
+    if (sortByLastUpdate === void 0) { sortByLastUpdate = false; }
     return __awaiter(this, void 0, void 0, function () {
         var queryConstraints, _i, tags_1, tag;
         return __generator(this, function (_a) {
             queryConstraints = [
                 (0, firestore_1.limit)(take),
-                (0, firestore_1.orderBy)('updatedAt', 'desc')
             ];
+            if (sortByLastUpdate) {
+                queryConstraints.push((0, firestore_1.orderBy)('updatedAt', 'desc'));
+            }
             if (after) {
                 queryConstraints.push((0, firestore_1.startAfter)(after));
             }
@@ -137,17 +140,20 @@ function findChannelsByTags(tags, take, after) {
     });
 }
 exports.findChannelsByTags = findChannelsByTags;
-function findChannelsByUser(userId, tags, take, after) {
+function findChannelsByUser(userId, tags, take, sortByLastUpdate, after) {
     if (tags === void 0) { tags = []; }
     if (take === void 0) { take = 10; }
+    if (sortByLastUpdate === void 0) { sortByLastUpdate = false; }
     return __awaiter(this, void 0, void 0, function () {
         var queryConstraints, _i, tags_2, tag;
         return __generator(this, function (_a) {
             queryConstraints = [
                 (0, firestore_1.where)('members', 'array-contains', userId),
                 (0, firestore_1.limit)(take),
-                (0, firestore_1.orderBy)('updatedAt', 'desc')
             ];
+            if (sortByLastUpdate) {
+                queryConstraints.push((0, firestore_1.orderBy)('updatedAt', 'desc'));
+            }
             if (after) {
                 queryConstraints.push((0, firestore_1.startAfter)(after));
             }

@@ -6,11 +6,11 @@ import Unsubscribe = firebase.Unsubscribe;
 export declare function _docRef(id: ChannelID): DocumentReference;
 export declare function createChannel(id: ChannelID, data: IChannelData): Promise<IChannel>;
 export declare function getChannel(id: ChannelID): Promise<IChannel | null>;
-export declare function findChannelsByTags(tags?: string[], take?: number, after?: DocumentSnapshot): Promise<{
+export declare function findChannelsByTags(tags?: string[], take?: number, sortByLastUpdate?: boolean, after?: DocumentSnapshot): Promise<{
     channels: IChannel[];
     next: import("@firebase/firestore").QueryDocumentSnapshot<import("@firebase/firestore").DocumentData>;
 }>;
-export declare function findChannelsByUser(userId: UserID, tags?: string[], take?: number, after?: DocumentSnapshot): Promise<{
+export declare function findChannelsByUser(userId: UserID, tags?: string[], take?: number, sortByLastUpdate?: boolean, after?: DocumentSnapshot): Promise<{
     channels: IChannel[];
     next: import("@firebase/firestore").QueryDocumentSnapshot<import("@firebase/firestore").DocumentData>;
 }>;
