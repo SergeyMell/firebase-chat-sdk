@@ -109,16 +109,19 @@ export function getChannel(id) {
         });
     });
 }
-export function findChannelsByTags(tags, take, after) {
+export function findChannelsByTags(tags, take, sortByLastUpdate, after) {
     if (tags === void 0) { tags = []; }
     if (take === void 0) { take = 10; }
+    if (sortByLastUpdate === void 0) { sortByLastUpdate = false; }
     return __awaiter(this, void 0, void 0, function () {
         var queryConstraints, _i, tags_1, tag;
         return __generator(this, function (_a) {
             queryConstraints = [
                 limit(take),
-                orderBy('updatedAt', 'desc')
             ];
+            if (sortByLastUpdate) {
+                queryConstraints.push(orderBy('updatedAt', 'desc'));
+            }
             if (after) {
                 queryConstraints.push(startAfter(after));
             }
@@ -130,17 +133,20 @@ export function findChannelsByTags(tags, take, after) {
         });
     });
 }
-export function findChannelsByUser(userId, tags, take, after) {
+export function findChannelsByUser(userId, tags, take, sortByLastUpdate, after) {
     if (tags === void 0) { tags = []; }
     if (take === void 0) { take = 10; }
+    if (sortByLastUpdate === void 0) { sortByLastUpdate = false; }
     return __awaiter(this, void 0, void 0, function () {
         var queryConstraints, _i, tags_2, tag;
         return __generator(this, function (_a) {
             queryConstraints = [
                 where('members', 'array-contains', userId),
                 limit(take),
-                orderBy('updatedAt', 'desc')
             ];
+            if (sortByLastUpdate) {
+                queryConstraints.push(orderBy('updatedAt', 'desc'));
+            }
             if (after) {
                 queryConstraints.push(startAfter(after));
             }

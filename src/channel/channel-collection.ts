@@ -72,11 +72,15 @@ export async function getChannel(id: ChannelID): Promise<IChannel | null> {
     return channelRecordToChannel(channel, doc.id);
 }
 
-export async function findChannelsByTags(tags: string[] = [], take = 10, after?: DocumentSnapshot) {
+export async function findChannelsByTags(tags: string[] = [], take = 10, sortByLastUpdate = false, after?: DocumentSnapshot) {
     const queryConstraints = [
         limit(take),
-        orderBy('updatedAt', 'desc')
     ];
+    if (sortByLastUpdate) {
+        queryConstraints.push(
+            orderBy('updatedAt', 'desc')
+        );
+    }
     if (after) {
         queryConstraints.push(startAfter(after));
     }
@@ -88,12 +92,16 @@ export async function findChannelsByTags(tags: string[] = [], take = 10, after?:
     return _findByQuery(queryConstraints);
 }
 
-export async function findChannelsByUser(userId: UserID, tags: string[] = [], take = 10, after?: DocumentSnapshot) {
+export async function findChannelsByUser(userId: UserID, tags: string[] = [], take = 10, sortByLastUpdate = false, after?: DocumentSnapshot) {
     const queryConstraints = [
         where('members', 'array-contains', userId),
         limit(take),
-        orderBy('updatedAt', 'desc')
     ];
+    if (sortByLastUpdate) {
+        queryConstraints.push(
+            orderBy('updatedAt', 'desc')
+        );
+    }
     if (after) {
         queryConstraints.push(startAfter(after));
     }
