@@ -135,7 +135,7 @@ function subscribeMessage(channelId, callback) {
                         // @ts-ignore
                         docs = docsData.docChanges().map(function (docData) { return docData.doc; }).map(firebase_snapshot_utils_1.docWithId).map(function (doc) { return messageRecordToChannel(doc, doc.id); });
                     }
-                    callback(docs);
+                    callback(docs, docsData);
                 })];
         });
     });
