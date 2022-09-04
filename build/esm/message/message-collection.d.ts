@@ -1,4 +1,4 @@
-import {DocumentSnapshot, DocumentData, QuerySnapshot} from 'firebase/firestore';
+import { DocumentSnapshot, DocumentData, QuerySnapshot } from 'firebase/firestore';
 import { IMessage, IMessageData } from './message.interface';
 import { ChannelID } from '../channel/channel.interface';
 import { UserID } from '../user/user.interface';
