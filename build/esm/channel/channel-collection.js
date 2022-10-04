@@ -43,7 +43,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 };
-import { collection, doc, getDoc, getDocs, getFirestore, limit, onSnapshot, query, setDoc, startAfter, where, orderBy } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, getFirestore, limit, onSnapshot, query, setDoc, startAfter, where, orderBy, writeBatch } from 'firebase/firestore';
 import { docWithId } from '../_utils/firebase-snapshot.utils';
 import { arrayToObject, objectToArray } from '../_utils/array.utils';
 var _collectionPath = '/channels';
@@ -54,6 +54,10 @@ function _collectionRef() {
 export function _docRef(id) {
     var db = getFirestore();
     return doc(db, "".concat(_collectionPath, "/").concat(id));
+}
+export function batchRef() {
+    var db = getFirestore();
+    return writeBatch(db);
 }
 function channelRecordToChannel(record, id) {
     var payload = null;

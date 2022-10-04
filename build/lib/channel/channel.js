@@ -39,13 +39,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateChannel = exports.removeUserFromChannel = exports.addUserToChannel = void 0;
 var channel_collection_1 = require("./channel-collection");
 var firestore_1 = require("firebase/firestore");
+var user_collection_1 = require("../user/user-collection");
 function addUserToChannel(channelId, userId) {
     return __awaiter(this, void 0, void 0, function () {
+        var batch;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, (0, firestore_1.updateDoc)((0, channel_collection_1._docRef)(channelId), {
+                case 0:
+                    batch = (0, channel_collection_1.batchRef)();
+                    batch.update((0, channel_collection_1._docRef)(channelId), {
                         members: (0, firestore_1.arrayUnion)(userId)
-                    })];
+                    });
+                    batch.update((0, user_collection_1._userDocRef)(userId), {
+                        userChannels: (0, firestore_1.arrayUnion)(channelId)
+                    });
+                    return [4 /*yield*/, batch.commit()];
                 case 1:
                     _a.sent();
                     return [2 /*return*/];
@@ -56,11 +64,18 @@ function addUserToChannel(channelId, userId) {
 exports.addUserToChannel = addUserToChannel;
 function removeUserFromChannel(channelId, userId) {
     return __awaiter(this, void 0, void 0, function () {
+        var batch;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, (0, firestore_1.updateDoc)((0, channel_collection_1._docRef)(channelId), {
+                case 0:
+                    batch = (0, channel_collection_1.batchRef)();
+                    batch.update((0, channel_collection_1._docRef)(channelId), {
                         members: (0, firestore_1.arrayRemove)(userId)
-                    })];
+                    });
+                    batch.update((0, user_collection_1._userDocRef)(userId), {
+                        userChannels: (0, firestore_1.arrayRemove)(channelId)
+                    });
+                    return [4 /*yield*/, batch.commit()];
                 case 1:
                     _a.sent();
                     return [2 /*return*/];

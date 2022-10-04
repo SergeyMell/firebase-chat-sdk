@@ -45,7 +45,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     return to.concat(ar || Array.prototype.slice.call(from));
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.unsubscribeChannel = exports.subscribeChannel = exports.findChannelsByUser = exports.findChannelsByTags = exports.getChannel = exports.createChannel = exports._docRef = void 0;
+exports.unsubscribeChannel = exports.subscribeChannel = exports.findChannelsByUser = exports.findChannelsByTags = exports.getChannel = exports.createChannel = exports.batchRef = exports._docRef = void 0;
 var firestore_1 = require("firebase/firestore");
 var firebase_snapshot_utils_1 = require("../_utils/firebase-snapshot.utils");
 var array_utils_1 = require("../_utils/array.utils");
@@ -59,6 +59,11 @@ function _docRef(id) {
     return (0, firestore_1.doc)(db, "".concat(_collectionPath, "/").concat(id));
 }
 exports._docRef = _docRef;
+function batchRef() {
+    var db = (0, firestore_1.getFirestore)();
+    return (0, firestore_1.writeBatch)(db);
+}
+exports.batchRef = batchRef;
 function channelRecordToChannel(record, id) {
     var payload = null;
     try {

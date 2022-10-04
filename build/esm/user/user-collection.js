@@ -37,7 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore';
 import { docWithId } from '../_utils/firebase-snapshot.utils';
 var _collectionPath = '/users';
-function _docRef(id) {
+export function _userDocRef(id) {
     var db = getFirestore();
     return doc(db, "".concat(_collectionPath, "/").concat(id));
 }
@@ -62,7 +62,7 @@ function _findUser(id) {
         var doc;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, getDoc(_docRef(id))];
+                case 0: return [4 /*yield*/, getDoc(_userDocRef(id))];
                 case 1:
                     doc = _a.sent();
                     if (!doc.exists()) {
@@ -80,7 +80,7 @@ function _createUser(id, name) {
             switch (_a.label) {
                 case 0:
                     data = { name: name };
-                    return [4 /*yield*/, setDoc(_docRef(id), data)];
+                    return [4 /*yield*/, setDoc(_userDocRef(id), data)];
                 case 1:
                     _a.sent();
                     return [2 /*return*/, Object.assign({ id: id }, data)];

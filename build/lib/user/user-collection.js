@@ -36,14 +36,15 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports._findOrCreateUser = void 0;
+exports._findOrCreateUser = exports._userDocRef = void 0;
 var firestore_1 = require("firebase/firestore");
 var firebase_snapshot_utils_1 = require("../_utils/firebase-snapshot.utils");
 var _collectionPath = '/users';
-function _docRef(id) {
+function _userDocRef(id) {
     var db = (0, firestore_1.getFirestore)();
     return (0, firestore_1.doc)(db, "".concat(_collectionPath, "/").concat(id));
 }
+exports._userDocRef = _userDocRef;
 function _findOrCreateUser(id, name) {
     return __awaiter(this, void 0, void 0, function () {
         var user;
@@ -66,7 +67,7 @@ function _findUser(id) {
         var doc;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, (0, firestore_1.getDoc)(_docRef(id))];
+                case 0: return [4 /*yield*/, (0, firestore_1.getDoc)(_userDocRef(id))];
                 case 1:
                     doc = _a.sent();
                     if (!doc.exists()) {
@@ -84,7 +85,7 @@ function _createUser(id, name) {
             switch (_a.label) {
                 case 0:
                     data = { name: name };
-                    return [4 /*yield*/, (0, firestore_1.setDoc)(_docRef(id), data)];
+                    return [4 /*yield*/, (0, firestore_1.setDoc)(_userDocRef(id), data)];
                 case 1:
                     _a.sent();
                     return [2 /*return*/, Object.assign({ id: id }, data)];
