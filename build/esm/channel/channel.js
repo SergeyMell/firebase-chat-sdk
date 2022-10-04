@@ -47,8 +47,11 @@ export function addUserToChannel(channelId, userId) {
                     batch.update(_docRef(channelId), {
                         members: arrayUnion(userId)
                     });
-                    batch.update(_userDocRef(userId), {
+                    batch.set(_userDocRef(userId), {
+                        id: userId,
                         userChannels: arrayUnion(channelId)
+                    }, {
+                        merge: true
                     });
                     return [4 /*yield*/, batch.commit()];
                 case 1:

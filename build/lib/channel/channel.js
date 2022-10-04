@@ -50,8 +50,11 @@ function addUserToChannel(channelId, userId) {
                     batch.update((0, channel_collection_1._docRef)(channelId), {
                         members: (0, firestore_1.arrayUnion)(userId)
                     });
-                    batch.update((0, user_collection_1._userDocRef)(userId), {
+                    batch.set((0, user_collection_1._userDocRef)(userId), {
+                        id: userId,
                         userChannels: (0, firestore_1.arrayUnion)(channelId)
+                    }, {
+                        merge: true
                     });
                     return [4 /*yield*/, batch.commit()];
                 case 1:

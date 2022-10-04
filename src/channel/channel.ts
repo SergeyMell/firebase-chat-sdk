@@ -10,8 +10,11 @@ export async function addUserToChannel(channelId: ChannelID, userId: UserID): Pr
     batch.update(_docRef(channelId), {
       members: arrayUnion(userId)
     });
-    batch.update(_userDocRef(userId), {
+    batch.set(_userDocRef(userId), {
+      id: userId,
       userChannels: arrayUnion(channelId)
+    }, {
+      merge: true
     });
 
     await batch.commit();
