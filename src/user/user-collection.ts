@@ -4,7 +4,7 @@ import { docWithId } from '../_utils/firebase-snapshot.utils';
 
 const _collectionPath = '/users';
 
-function _docRef(id: UserID): DocumentReference {
+export function _userDocRef(id: UserID): DocumentReference {
     const db = getFirestore();
     return doc(db, `${_collectionPath}/${id}`);
 }
@@ -18,7 +18,7 @@ export async function _findOrCreateUser(id: UserID, name: string): Promise<IUser
 }
 
 async function _findUser(id: UserID): Promise<IUser | null> {
-    const doc = await getDoc(_docRef(id));
+    const doc = await getDoc(_userDocRef(id));
     if (!doc.exists()) {
         return null;
     }
@@ -27,6 +27,6 @@ async function _findUser(id: UserID): Promise<IUser | null> {
 
 async function _createUser(id: UserID, name: string): Promise<IUser> {
     const data: IUserData = {name};
-    await setDoc(_docRef(id), data);
+    await setDoc(_userDocRef(id), data);
     return Object.assign({id}, data);
 }

@@ -1,19 +1,21 @@
 import {
-    collection,
-    CollectionReference,
-    doc,
-    DocumentReference,
-    DocumentSnapshot,
-    getDoc,
-    getDocs,
-    getFirestore,
-    limit, onSnapshot,
-    query,
-    QueryConstraint,
-    setDoc,
-    startAfter,
-    where,
-    QuerySnapshot, orderBy
+  collection,
+  CollectionReference,
+  doc,
+  DocumentReference,
+  DocumentSnapshot,
+  getDoc,
+  getDocs,
+  getFirestore,
+  limit, onSnapshot,
+  query,
+  QueryConstraint,
+  setDoc,
+  startAfter,
+  where,
+  QuerySnapshot,
+  orderBy,
+  writeBatch
 } from 'firebase/firestore';
 import { ChannelID, IChannel, IChannelData, IChannelRecord } from './channel.interface';
 import { docWithId } from '../_utils/firebase-snapshot.utils';
@@ -21,6 +23,7 @@ import { UserID } from '../user/user.interface';
 import { arrayToObject, objectToArray } from '../_utils/array.utils';
 import firebase from 'firebase/compat';
 import Unsubscribe = firebase.Unsubscribe;
+import { WriteBatch } from '@firebase/firestore';
 
 const _collectionPath = '/channels';
 
@@ -32,6 +35,11 @@ function _collectionRef(): CollectionReference {
 export function _docRef(id: ChannelID): DocumentReference {
     const db = getFirestore();
     return doc(db, `${_collectionPath}/${id}`);
+}
+
+export function batchRef(): WriteBatch {
+  const db = getFirestore();
+  return writeBatch(db);
 }
 
 function channelRecordToChannel(record: IChannelRecord, id: ChannelID): IChannel {
