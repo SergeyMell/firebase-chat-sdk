@@ -132,7 +132,7 @@ async function _findByQuery(queryConstraints: QueryConstraint[]) {
     };
 }
 
-export async function subscribeChannel(callback: (channels: IChannel[], channelData: QuerySnapshot) => void): Promise<Unsubscribe> {
+export async function subscribeChannels(callback: (channels: IChannel[], channelData: QuerySnapshot) => void): Promise<Unsubscribe> {
     return onSnapshot(_collectionRef(), (channelData) => {
         let channels: IChannel[] = [];
         // Check that this is not the first snapshot request, but adding a new document to the listener
@@ -142,6 +142,18 @@ export async function subscribeChannel(callback: (channels: IChannel[], channelD
         }
         callback(channels, channelData);
     });
+}
+
+export async function subscribeChannel(channelId: string, callback: (channelData: DocumentSnapshot) => void): Promise<Unsubscribe> {
+  return onSnapshot(_docRef(channelId), (channelData) => {
+    // let channels: IChannel[] = [];
+    // // Check that this is not the first snapshot request, but adding a new document to the listener
+    // if (channelData.docs.length !== channelData.docChanges().length) {
+    //   // @ts-ignore
+    //   channels = channelData.docChanges().map(docData => docData.doc).map(docWithId).map(doc => channelRecordToChannel(doc, doc.id));
+    // }
+    callback(channelData);
+  });
 }
 
 export async function unsubscribeChannel(unsubscribe: Unsubscribe): Promise<void> {

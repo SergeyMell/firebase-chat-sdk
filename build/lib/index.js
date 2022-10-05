@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.unsubscribeMessage = exports.subscribeMessage = exports.getMessages = exports.postMessage = exports.unsubscribeChannel = exports.subscribeChannel = exports.findChannelsByUser = exports.findChannelsByTags = exports.getChannel = exports.createChannel = exports.updateChannel = exports.removeUserFromChannel = exports.addUserToChannel = exports.connectUser = exports.initChatApp = void 0;
+exports.unsubscribeMessage = exports.subscribeMessage = exports.getMessages = exports.postMessage = exports.unsubscribeChannel = exports.subscribeChannel = exports.subscribeChannels = exports.findChannelsByUser = exports.findChannelsByTags = exports.getChannel = exports.createChannel = exports.updateChannel = exports.removeUserFromChannel = exports.addUserToChannel = exports.connectUser = exports.initChatApp = void 0;
 var chat_app_1 = require("./chat-app");
 Object.defineProperty(exports, "initChatApp", { enumerable: true, get: function () { return chat_app_1.initChatApp; } });
 var user_1 = require("./user/user");
@@ -14,6 +14,7 @@ Object.defineProperty(exports, "createChannel", { enumerable: true, get: functio
 Object.defineProperty(exports, "getChannel", { enumerable: true, get: function () { return channel_collection_1.getChannel; } });
 Object.defineProperty(exports, "findChannelsByTags", { enumerable: true, get: function () { return channel_collection_1.findChannelsByTags; } });
 Object.defineProperty(exports, "findChannelsByUser", { enumerable: true, get: function () { return channel_collection_1.findChannelsByUser; } });
+Object.defineProperty(exports, "subscribeChannels", { enumerable: true, get: function () { return channel_collection_1.subscribeChannels; } });
 Object.defineProperty(exports, "subscribeChannel", { enumerable: true, get: function () { return channel_collection_1.subscribeChannel; } });
 Object.defineProperty(exports, "unsubscribeChannel", { enumerable: true, get: function () { return channel_collection_1.unsubscribeChannel; } });
 var message_collection_1 = require("./message/message-collection");
