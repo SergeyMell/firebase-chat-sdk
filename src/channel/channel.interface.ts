@@ -1,6 +1,7 @@
 import { UserID } from '../user/user.interface';
 
 export type ChannelID = string | number;
+export type FirmID = string | number;
 
 export interface IChannelData {
     title: string;

@@ -1,5 +1,6 @@
 import { UserID } from '../user/user.interface';
 export declare type ChannelID = string | number;
+export declare type FirmID = string | number;
 export interface IChannelData {
     title: string;
     payload?: Record<string, any>;

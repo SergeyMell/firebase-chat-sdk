@@ -40,7 +40,7 @@ exports.updateChannel = exports.removeUserFromChannel = exports.addUserToChannel
 var channel_collection_1 = require("./channel-collection");
 var firestore_1 = require("firebase/firestore");
 var user_collection_1 = require("../user/user-collection");
-function addUserToChannel(channelId, userId) {
+function addUserToChannel(channelId, userId, userName, firmId) {
     return __awaiter(this, void 0, void 0, function () {
         var batch;
         return __generator(this, function (_a) {
@@ -51,8 +51,11 @@ function addUserToChannel(channelId, userId) {
                         members: (0, firestore_1.arrayUnion)(userId)
                     });
                     batch.set((0, user_collection_1._userDocRef)(userId), {
-                        id: userId,
-                        userChannels: (0, firestore_1.arrayUnion)(channelId)
+                        name: userName,
+                        userChannels: (0, firestore_1.arrayUnion)({
+                            firmId: firmId,
+                            channelId: channelId
+                        })
                     }, {
                         merge: true
                     });

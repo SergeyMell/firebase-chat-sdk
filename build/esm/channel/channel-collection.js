@@ -200,12 +200,6 @@ export function subscribeChannel(channelId, callback) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             return [2 /*return*/, onSnapshot(_docRef(channelId), function (channelData) {
-                    // let channels: IChannel[] = [];
-                    // // Check that this is not the first snapshot request, but adding a new document to the listener
-                    // if (channelData.docs.length !== channelData.docChanges().length) {
-                    //   // @ts-ignore
-                    //   channels = channelData.docChanges().map(docData => docData.doc).map(docWithId).map(doc => channelRecordToChannel(doc, doc.id));
-                    // }
                     callback(channelData);
                 })];
         });

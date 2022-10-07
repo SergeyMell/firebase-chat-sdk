@@ -146,12 +146,6 @@ export async function subscribeChannels(callback: (channels: IChannel[], channel
 
 export async function subscribeChannel(channelId: string, callback: (channelData: DocumentSnapshot) => void): Promise<Unsubscribe> {
   return onSnapshot(_docRef(channelId), (channelData) => {
-    // let channels: IChannel[] = [];
-    // // Check that this is not the first snapshot request, but adding a new document to the listener
-    // if (channelData.docs.length !== channelData.docChanges().length) {
-    //   // @ts-ignore
-    //   channels = channelData.docChanges().map(docData => docData.doc).map(docWithId).map(doc => channelRecordToChannel(doc, doc.id));
-    // }
     callback(channelData);
   });
 }

@@ -37,7 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 import { _docRef, batchRef } from './channel-collection';
 import { arrayRemove, arrayUnion, updateDoc } from 'firebase/firestore';
 import { _userDocRef } from '../user/user-collection';
-export function addUserToChannel(channelId, userId) {
+export function addUserToChannel(channelId, userId, userName, firmId) {
     return __awaiter(this, void 0, void 0, function () {
         var batch;
         return __generator(this, function (_a) {
@@ -48,8 +48,11 @@ export function addUserToChannel(channelId, userId) {
                         members: arrayUnion(userId)
                     });
                     batch.set(_userDocRef(userId), {
-                        id: userId,
-                        userChannels: arrayUnion(channelId)
+                        name: userName,
+                        userChannels: arrayUnion({
+                            firmId: firmId,
+                            channelId: channelId
+                        })
                     }, {
                         merge: true
                     });
