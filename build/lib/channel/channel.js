@@ -68,7 +68,7 @@ function addUserToChannel(channelId, userId, userName, firmId) {
     });
 }
 exports.addUserToChannel = addUserToChannel;
-function removeUserFromChannel(channelId, userId) {
+function removeUserFromChannel(channelId, userId, firmId) {
     return __awaiter(this, void 0, void 0, function () {
         var batch;
         return __generator(this, function (_a) {
@@ -79,7 +79,10 @@ function removeUserFromChannel(channelId, userId) {
                         members: (0, firestore_1.arrayRemove)(userId)
                     });
                     batch.update((0, user_collection_1._userDocRef)(userId), {
-                        userChannels: (0, firestore_1.arrayRemove)(channelId)
+                        userChannels: (0, firestore_1.arrayRemove)({
+                            firmId: firmId,
+                            channelId: channelId
+                        })
                     });
                     return [4 /*yield*/, batch.commit()];
                 case 1:

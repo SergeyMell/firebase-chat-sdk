@@ -23,14 +23,17 @@ export async function addUserToChannel(channelId: ChannelID, userId: UserID, use
     await batch.commit();
 }
 
-export async function removeUserFromChannel(channelId: ChannelID, userId: UserID): Promise<void> {
+export async function removeUserFromChannel(channelId: ChannelID, userId: UserID, firmId: FirmID): Promise<void> {
     const batch = batchRef();
 
     batch.update(_docRef(channelId), {
       members: arrayRemove(userId)
     });
     batch.update(_userDocRef(userId), {
-      userChannels: arrayRemove(channelId)
+      userChannels: arrayRemove({
+        firmId: firmId,
+        channelId: channelId
+      })
     });
 
     await batch.commit();
