@@ -34,7 +34,7 @@ async function _createUser(id: UserID, name: string): Promise<IUser> {
     return Object.assign({id}, data);
 }
 
-export async function subscribeUser(userId: string, callback: (channelData: DocumentSnapshot) => void): Promise<Unsubscribe> {
+export async function subscribeUser(userId: UserID, callback: (channelData: DocumentSnapshot) => void): Promise<Unsubscribe> {
   return onSnapshot(_userDocRef(userId), (channelData) => {
     callback(channelData);
   });
