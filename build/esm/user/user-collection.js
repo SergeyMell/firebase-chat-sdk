@@ -34,7 +34,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore';
+import { doc, getDoc, getFirestore, onSnapshot, setDoc } from 'firebase/firestore';
 import { docWithId } from '../_utils/firebase-snapshot.utils';
 var _collectionPath = '/users';
 export function _userDocRef(id) {
@@ -85,6 +85,23 @@ function _createUser(id, name) {
                     _a.sent();
                     return [2 /*return*/, Object.assign({ id: id }, data)];
             }
+        });
+    });
+}
+export function subscribeUser(userId, callback) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            return [2 /*return*/, onSnapshot(_userDocRef(userId), function (channelData) {
+                    callback(channelData);
+                })];
+        });
+    });
+}
+export function unsubscribeUser(unsubscribe) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            unsubscribe();
+            return [2 /*return*/];
         });
     });
 }

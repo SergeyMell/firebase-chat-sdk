@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports._findOrCreateUser = exports._userDocRef = void 0;
+exports.unsubscribeUser = exports.subscribeUser = exports._findOrCreateUser = exports._userDocRef = void 0;
 var firestore_1 = require("firebase/firestore");
 var firebase_snapshot_utils_1 = require("../_utils/firebase-snapshot.utils");
 var _collectionPath = '/users';
@@ -93,3 +93,22 @@ function _createUser(id, name) {
         });
     });
 }
+function subscribeUser(userId, callback) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            return [2 /*return*/, (0, firestore_1.onSnapshot)(_userDocRef(userId), function (channelData) {
+                    callback(channelData);
+                })];
+        });
+    });
+}
+exports.subscribeUser = subscribeUser;
+function unsubscribeUser(unsubscribe) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            unsubscribe();
+            return [2 /*return*/];
+        });
+    });
+}
+exports.unsubscribeUser = unsubscribeUser;

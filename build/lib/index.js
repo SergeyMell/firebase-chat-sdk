@@ -1,10 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.unsubscribeMessage = exports.subscribeMessage = exports.getMessages = exports.postMessage = exports.unsubscribeChannel = exports.subscribeChannel = exports.subscribeChannels = exports.findChannelsByUser = exports.findChannelsByTags = exports.getChannel = exports.createChannel = exports.updateChannel = exports.removeUserFromChannel = exports.addUserToChannel = exports.connectUser = exports.initChatApp = void 0;
+exports.unsubscribeMessage = exports.subscribeMessage = exports.getMessages = exports.postMessage = exports.unsubscribeChannel = exports.subscribeChannel = exports.subscribeChannels = exports.findChannelsByUser = exports.findChannelsByTags = exports.getChannel = exports.createChannel = exports.updateChannel = exports.removeUserFromChannel = exports.addUserToChannel = exports.unsubscribeUser = exports.subscribeUser = exports.connectUser = exports.initChatApp = void 0;
 var chat_app_1 = require("./chat-app");
 Object.defineProperty(exports, "initChatApp", { enumerable: true, get: function () { return chat_app_1.initChatApp; } });
 var user_1 = require("./user/user");
 Object.defineProperty(exports, "connectUser", { enumerable: true, get: function () { return user_1.connectUser; } });
+var user_collection_1 = require("./user/user-collection");
+Object.defineProperty(exports, "subscribeUser", { enumerable: true, get: function () { return user_collection_1.subscribeUser; } });
+Object.defineProperty(exports, "unsubscribeUser", { enumerable: true, get: function () { return user_collection_1.unsubscribeUser; } });
 var channel_1 = require("./channel/channel");
 Object.defineProperty(exports, "addUserToChannel", { enumerable: true, get: function () { return channel_1.addUserToChannel; } });
 Object.defineProperty(exports, "removeUserFromChannel", { enumerable: true, get: function () { return channel_1.removeUserFromChannel; } });
