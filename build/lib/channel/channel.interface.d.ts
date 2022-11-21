@@ -18,7 +18,6 @@ export interface IChannelUpdate {
     payload: string | null;
     tags: string[];
     members: UserID[];
-    updatedAt: number;
 }
 export interface IChannel extends IChannelData {
     id: ChannelID;
