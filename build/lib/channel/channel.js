@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateChannel = exports.removeUserFromChannel = exports.addUserToChannel = void 0;
+exports.updateChannelFull = exports.updateChannel = exports.removeUserFromChannel = exports.addUserToChannel = void 0;
 var channel_collection_1 = require("./channel-collection");
 var firestore_1 = require("firebase/firestore");
 var user_collection_1 = require("../user/user-collection");
@@ -109,3 +109,16 @@ function updateChannel(channelId, payload, updatedAt) {
     });
 }
 exports.updateChannel = updateChannel;
+function updateChannelFull(channelId, data) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, (0, firestore_1.setDoc)((0, channel_collection_1._docRef)(channelId), data)];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.updateChannelFull = updateChannelFull;

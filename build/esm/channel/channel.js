@@ -35,7 +35,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 import { _docRef, batchRef } from './channel-collection';
-import { arrayRemove, arrayUnion, updateDoc } from 'firebase/firestore';
+import { arrayRemove, arrayUnion, setDoc, updateDoc } from 'firebase/firestore';
 import { _userDocRef } from '../user/user-collection';
 export function addUserToChannel(channelId, userId, userName, firmId) {
     return __awaiter(this, void 0, void 0, function () {
@@ -96,6 +96,18 @@ export function updateChannel(channelId, payload, updatedAt) {
                 case 0:
                     data = updatedAt ? { payload: payload, updatedAt: updatedAt } : { payload: payload };
                     return [4 /*yield*/, updateDoc(_docRef(channelId), data)];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+export function updateChannelFull(channelId, data) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, setDoc(_docRef(channelId), data)];
                 case 1:
                     _a.sent();
                     return [2 /*return*/];
