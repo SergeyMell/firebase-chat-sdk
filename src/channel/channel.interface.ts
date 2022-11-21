@@ -17,13 +17,6 @@ export interface IChannelRecord {
     updatedAt: number;
 }
 
-export interface IChannelUpdate {
-  title: string;
-  payload: string | null;
-  tags: string[];
-  members: UserID[];
-}
-
 export interface IChannel extends IChannelData {
     id: ChannelID;
     members: UserID[];
