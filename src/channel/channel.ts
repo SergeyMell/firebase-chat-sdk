@@ -1,6 +1,6 @@
 import { _docRef, batchRef } from './channel-collection';
 import { arrayRemove, arrayUnion, setDoc, updateDoc } from 'firebase/firestore';
-import { ChannelID, FirmID, IChannel, IChannelRecord } from './channel.interface';
+import { ChannelID, FirmID, IChannelUpdate } from './channel.interface';
 import { UserID } from '../user/user.interface';
 import { _userDocRef } from '../user/user-collection';
 
@@ -44,6 +44,6 @@ export async function updateChannel(channelId: ChannelID, payload: string, updat
     await updateDoc(_docRef(channelId), data);
 }
 
-export async function updateChannelFull(channelId: ChannelID, data: IChannelRecord): Promise<void> {
+export async function updateChannelFull(channelId: ChannelID, data: IChannelUpdate): Promise<void> {
   await setDoc(_docRef(channelId), data);
 }

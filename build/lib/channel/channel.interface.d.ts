@@ -13,6 +13,13 @@ export interface IChannelRecord {
     members: UserID[];
     updatedAt: number;
 }
+export interface IChannelUpdate {
+    title: string;
+    payload: string | null;
+    tags: string[];
+    members: UserID[];
+    updatedAt: number;
+}
 export interface IChannel extends IChannelData {
     id: ChannelID;
     members: UserID[];
