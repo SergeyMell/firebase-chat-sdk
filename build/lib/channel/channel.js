@@ -36,16 +36,30 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeUserFromChannel = exports.addUserToChannel = void 0;
+exports.updateChannelFull = exports.updateChannel = exports.removeUserFromChannel = exports.addUserToChannel = void 0;
 var channel_collection_1 = require("./channel-collection");
 var firestore_1 = require("firebase/firestore");
-function addUserToChannel(channelId, userId) {
+var user_collection_1 = require("../user/user-collection");
+function addUserToChannel(channelId, userId, userName, firmId) {
     return __awaiter(this, void 0, void 0, function () {
+        var batch;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, (0, firestore_1.updateDoc)((0, channel_collection_1._docRef)(channelId), {
+                case 0:
+                    batch = (0, channel_collection_1.batchRef)();
+                    batch.update((0, channel_collection_1._docRef)(channelId), {
                         members: (0, firestore_1.arrayUnion)(userId)
-                    })];
+                    });
+                    batch.set((0, user_collection_1._userDocRef)(userId), {
+                        name: userName,
+                        userChannels: (0, firestore_1.arrayUnion)({
+                            firmId: firmId,
+                            channelId: channelId
+                        })
+                    }, {
+                        merge: true
+                    });
+                    return [4 /*yield*/, batch.commit()];
                 case 1:
                     _a.sent();
                     return [2 /*return*/];
@@ -54,13 +68,23 @@ function addUserToChannel(channelId, userId) {
     });
 }
 exports.addUserToChannel = addUserToChannel;
-function removeUserFromChannel(channelId, userId) {
+function removeUserFromChannel(channelId, userId, firmId) {
     return __awaiter(this, void 0, void 0, function () {
+        var batch;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, (0, firestore_1.updateDoc)((0, channel_collection_1._docRef)(channelId), {
+                case 0:
+                    batch = (0, channel_collection_1.batchRef)();
+                    batch.update((0, channel_collection_1._docRef)(channelId), {
                         members: (0, firestore_1.arrayRemove)(userId)
-                    })];
+                    });
+                    batch.update((0, user_collection_1._userDocRef)(userId), {
+                        userChannels: (0, firestore_1.arrayRemove)({
+                            firmId: firmId,
+                            channelId: channelId
+                        })
+                    });
+                    return [4 /*yield*/, batch.commit()];
                 case 1:
                     _a.sent();
                     return [2 /*return*/];
@@ -69,3 +93,32 @@ function removeUserFromChannel(channelId, userId) {
     });
 }
 exports.removeUserFromChannel = removeUserFromChannel;
+function updateChannel(channelId, payload, updatedAt) {
+    return __awaiter(this, void 0, void 0, function () {
+        var data;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    data = updatedAt ? { payload: payload, updatedAt: updatedAt } : { payload: payload };
+                    return [4 /*yield*/, (0, firestore_1.updateDoc)((0, channel_collection_1._docRef)(channelId), data)];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.updateChannel = updateChannel;
+function updateChannelFull(channelId, data) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, (0, firestore_1.setDoc)((0, channel_collection_1._docRef)(channelId), data)];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.updateChannelFull = updateChannelFull;

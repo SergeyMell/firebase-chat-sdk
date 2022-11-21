@@ -10,12 +10,17 @@ import {
     limit,
     orderBy,
     query,
-    startAfter
+    startAfter,
+    onSnapshot,
+    DocumentData,
+    QuerySnapshot
 } from 'firebase/firestore';
-import { IMessage, IMessageData, IMessageRecord } from './message.interface';
-import { ChannelID } from '../channel/channel.interface';
-import { UserID } from '../user/user.interface';
-import { docWithId } from '../_utils/firebase-snapshot.utils';
+import {IMessage, IMessageData, IMessageRecord} from './message.interface';
+import {ChannelID} from '../channel/channel.interface';
+import {UserID} from '../user/user.interface';
+import {docWithId} from '../_utils/firebase-snapshot.utils';
+import firebase from 'firebase/compat';
+import Unsubscribe = firebase.Unsubscribe;
 
 function _collectionPath(channelId: ChannelID): string {
     return `/channels/${channelId}/messages`;
@@ -74,4 +79,21 @@ export async function getMessages(channel: ChannelID, take: number = 10, after?:
         messages: docs.map(docWithId).map(doc => messageRecordToChannel(doc, doc.id)),
         next: docs[docs.length - 1],
     };
+}
+
+export async function subscribeMessage(channelId: ChannelID, callback: (docs: IMessage[], docsData: QuerySnapshot) => void): Promise<Unsubscribe> {
+    const db = getFirestore();
+    return onSnapshot(collection(db, _collectionPath(channelId)), (docsData) => {
+        let docs: IMessage[] = [];
+        // Check that this is not the first snapshot request, but adding a new document to the listener
+        if (docsData.docs.length !== docsData.docChanges().length) {
+            // @ts-ignore
+            docs = docsData.docChanges().map(docData => docData.doc).map(docWithId).map(doc => messageRecordToChannel(doc, doc.id));
+        }
+        callback(docs, docsData);
+    });
+}
+
+export async function unsubscribeMessage(unsubscribe: Unsubscribe): Promise<void> {
+    unsubscribe();
 }

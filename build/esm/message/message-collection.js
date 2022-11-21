@@ -43,7 +43,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 };
-import { addDoc, collection, doc, getDocs, getFirestore, limit, orderBy, query, startAfter } from 'firebase/firestore';
+import { addDoc, collection, doc, getDocs, getFirestore, limit, orderBy, query, startAfter, onSnapshot } from 'firebase/firestore';
 import { docWithId } from '../_utils/firebase-snapshot.utils';
 function _collectionPath(channelId) {
     return "/channels/".concat(channelId, "/messages");
@@ -115,6 +115,31 @@ export function getMessages(channel, take, after) {
                             next: docs[docs.length - 1],
                         }];
             }
+        });
+    });
+}
+export function subscribeMessage(channelId, callback) {
+    return __awaiter(this, void 0, void 0, function () {
+        var db;
+        return __generator(this, function (_a) {
+            db = getFirestore();
+            return [2 /*return*/, onSnapshot(collection(db, _collectionPath(channelId)), function (docsData) {
+                    var docs = [];
+                    // Check that this is not the first snapshot request, but adding a new document to the listener
+                    if (docsData.docs.length !== docsData.docChanges().length) {
+                        // @ts-ignore
+                        docs = docsData.docChanges().map(function (docData) { return docData.doc; }).map(docWithId).map(function (doc) { return messageRecordToChannel(doc, doc.id); });
+                    }
+                    callback(docs, docsData);
+                })];
+        });
+    });
+}
+export function unsubscribeMessage(unsubscribe) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            unsubscribe();
+            return [2 /*return*/];
         });
     });
 }

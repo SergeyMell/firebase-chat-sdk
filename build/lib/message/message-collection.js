@@ -45,7 +45,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     return to.concat(ar || Array.prototype.slice.call(from));
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMessages = exports.postMessage = void 0;
+exports.unsubscribeMessage = exports.subscribeMessage = exports.getMessages = exports.postMessage = void 0;
 var firestore_1 = require("firebase/firestore");
 var firebase_snapshot_utils_1 = require("../_utils/firebase-snapshot.utils");
 function _collectionPath(channelId) {
@@ -123,3 +123,30 @@ function getMessages(channel, take, after) {
     });
 }
 exports.getMessages = getMessages;
+function subscribeMessage(channelId, callback) {
+    return __awaiter(this, void 0, void 0, function () {
+        var db;
+        return __generator(this, function (_a) {
+            db = (0, firestore_1.getFirestore)();
+            return [2 /*return*/, (0, firestore_1.onSnapshot)((0, firestore_1.collection)(db, _collectionPath(channelId)), function (docsData) {
+                    var docs = [];
+                    // Check that this is not the first snapshot request, but adding a new document to the listener
+                    if (docsData.docs.length !== docsData.docChanges().length) {
+                        // @ts-ignore
+                        docs = docsData.docChanges().map(function (docData) { return docData.doc; }).map(firebase_snapshot_utils_1.docWithId).map(function (doc) { return messageRecordToChannel(doc, doc.id); });
+                    }
+                    callback(docs, docsData);
+                })];
+        });
+    });
+}
+exports.subscribeMessage = subscribeMessage;
+function unsubscribeMessage(unsubscribe) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            unsubscribe();
+            return [2 /*return*/];
+        });
+    });
+}
+exports.unsubscribeMessage = unsubscribeMessage;

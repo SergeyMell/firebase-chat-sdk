@@ -43,7 +43,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 };
-import { collection, doc, getDoc, getDocs, getFirestore, limit, query, setDoc, startAfter, where, } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, getFirestore, limit, onSnapshot, query, setDoc, startAfter, where, orderBy, writeBatch } from 'firebase/firestore';
 import { docWithId } from '../_utils/firebase-snapshot.utils';
 import { arrayToObject, objectToArray } from '../_utils/array.utils';
 var _collectionPath = '/channels';
@@ -54,6 +54,10 @@ function _collectionRef() {
 export function _docRef(id) {
     var db = getFirestore();
     return doc(db, "".concat(_collectionPath, "/").concat(id));
+}
+export function batchRef() {
+    var db = getFirestore();
+    return writeBatch(db);
 }
 function channelRecordToChannel(record, id) {
     var payload = null;
@@ -67,7 +71,7 @@ function channelRecordToChannel(record, id) {
         title: record.title,
         payload: payload,
         tags: objectToArray(record.tags),
-        members: record.members
+        members: record.members,
     };
 }
 export function createChannel(id, data) {
@@ -81,7 +85,8 @@ export function createChannel(id, data) {
                         title: data.title,
                         payload: JSON.stringify(data.payload || null),
                         tags: tags,
-                        members: []
+                        members: [],
+                        updatedAt: Date.now(),
                     };
                     return [4 /*yield*/, setDoc(_docRef(id), channel)];
                 case 1:
@@ -108,15 +113,19 @@ export function getChannel(id) {
         });
     });
 }
-export function findChannelsByTags(tags, take, after) {
+export function findChannelsByTags(tags, take, sortByLastUpdate, after) {
     if (tags === void 0) { tags = []; }
     if (take === void 0) { take = 10; }
+    if (sortByLastUpdate === void 0) { sortByLastUpdate = false; }
     return __awaiter(this, void 0, void 0, function () {
         var queryConstraints, _i, tags_1, tag;
         return __generator(this, function (_a) {
             queryConstraints = [
-                limit(take)
+                limit(take),
             ];
+            if (sortByLastUpdate) {
+                queryConstraints.push(orderBy('updatedAt', 'desc'));
+            }
             if (after) {
                 queryConstraints.push(startAfter(after));
             }
@@ -128,16 +137,20 @@ export function findChannelsByTags(tags, take, after) {
         });
     });
 }
-export function findChannelsByUser(userId, tags, take, after) {
+export function findChannelsByUser(userId, tags, take, sortByLastUpdate, after) {
     if (tags === void 0) { tags = []; }
     if (take === void 0) { take = 10; }
+    if (sortByLastUpdate === void 0) { sortByLastUpdate = false; }
     return __awaiter(this, void 0, void 0, function () {
         var queryConstraints, _i, tags_2, tag;
         return __generator(this, function (_a) {
             queryConstraints = [
                 where('members', 'array-contains', userId),
-                limit(take)
+                limit(take),
             ];
+            if (sortByLastUpdate) {
+                queryConstraints.push(orderBy('updatedAt', 'desc'));
+            }
             if (after) {
                 queryConstraints.push(startAfter(after));
             }
@@ -165,6 +178,38 @@ function _findByQuery(queryConstraints) {
                             next: docs[docs.length - 1],
                         }];
             }
+        });
+    });
+}
+export function subscribeChannels(callback) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            return [2 /*return*/, onSnapshot(_collectionRef(), function (channelData) {
+                    var channels = [];
+                    // Check that this is not the first snapshot request, but adding a new document to the listener
+                    if (channelData.docs.length !== channelData.docChanges().length) {
+                        // @ts-ignore
+                        channels = channelData.docChanges().map(function (docData) { return docData.doc; }).map(docWithId).map(function (doc) { return channelRecordToChannel(doc, doc.id); });
+                    }
+                    callback(channels, channelData);
+                })];
+        });
+    });
+}
+export function subscribeChannel(channelId, callback) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            return [2 /*return*/, onSnapshot(_docRef(channelId), function (channelData) {
+                    callback(channelData);
+                })];
+        });
+    });
+}
+export function unsubscribeChannel(unsubscribe) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            unsubscribe();
+            return [2 /*return*/];
         });
     });
 }

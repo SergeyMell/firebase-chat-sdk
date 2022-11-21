@@ -45,7 +45,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     return to.concat(ar || Array.prototype.slice.call(from));
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.findChannelsByUser = exports.findChannelsByTags = exports.getChannel = exports.createChannel = exports._docRef = void 0;
+exports.unsubscribeChannel = exports.subscribeChannel = exports.subscribeChannels = exports.findChannelsByUser = exports.findChannelsByTags = exports.getChannel = exports.createChannel = exports.batchRef = exports._docRef = void 0;
 var firestore_1 = require("firebase/firestore");
 var firebase_snapshot_utils_1 = require("../_utils/firebase-snapshot.utils");
 var array_utils_1 = require("../_utils/array.utils");
@@ -59,6 +59,11 @@ function _docRef(id) {
     return (0, firestore_1.doc)(db, "".concat(_collectionPath, "/").concat(id));
 }
 exports._docRef = _docRef;
+function batchRef() {
+    var db = (0, firestore_1.getFirestore)();
+    return (0, firestore_1.writeBatch)(db);
+}
+exports.batchRef = batchRef;
 function channelRecordToChannel(record, id) {
     var payload = null;
     try {
@@ -71,7 +76,7 @@ function channelRecordToChannel(record, id) {
         title: record.title,
         payload: payload,
         tags: (0, array_utils_1.objectToArray)(record.tags),
-        members: record.members
+        members: record.members,
     };
 }
 function createChannel(id, data) {
@@ -85,7 +90,8 @@ function createChannel(id, data) {
                         title: data.title,
                         payload: JSON.stringify(data.payload || null),
                         tags: tags,
-                        members: []
+                        members: [],
+                        updatedAt: Date.now(),
                     };
                     return [4 /*yield*/, (0, firestore_1.setDoc)(_docRef(id), channel)];
                 case 1:
@@ -114,15 +120,19 @@ function getChannel(id) {
     });
 }
 exports.getChannel = getChannel;
-function findChannelsByTags(tags, take, after) {
+function findChannelsByTags(tags, take, sortByLastUpdate, after) {
     if (tags === void 0) { tags = []; }
     if (take === void 0) { take = 10; }
+    if (sortByLastUpdate === void 0) { sortByLastUpdate = false; }
     return __awaiter(this, void 0, void 0, function () {
         var queryConstraints, _i, tags_1, tag;
         return __generator(this, function (_a) {
             queryConstraints = [
-                (0, firestore_1.limit)(take)
+                (0, firestore_1.limit)(take),
             ];
+            if (sortByLastUpdate) {
+                queryConstraints.push((0, firestore_1.orderBy)('updatedAt', 'desc'));
+            }
             if (after) {
                 queryConstraints.push((0, firestore_1.startAfter)(after));
             }
@@ -135,16 +145,20 @@ function findChannelsByTags(tags, take, after) {
     });
 }
 exports.findChannelsByTags = findChannelsByTags;
-function findChannelsByUser(userId, tags, take, after) {
+function findChannelsByUser(userId, tags, take, sortByLastUpdate, after) {
     if (tags === void 0) { tags = []; }
     if (take === void 0) { take = 10; }
+    if (sortByLastUpdate === void 0) { sortByLastUpdate = false; }
     return __awaiter(this, void 0, void 0, function () {
         var queryConstraints, _i, tags_2, tag;
         return __generator(this, function (_a) {
             queryConstraints = [
                 (0, firestore_1.where)('members', 'array-contains', userId),
-                (0, firestore_1.limit)(take)
+                (0, firestore_1.limit)(take),
             ];
+            if (sortByLastUpdate) {
+                queryConstraints.push((0, firestore_1.orderBy)('updatedAt', 'desc'));
+            }
             if (after) {
                 queryConstraints.push((0, firestore_1.startAfter)(after));
             }
@@ -176,3 +190,38 @@ function _findByQuery(queryConstraints) {
         });
     });
 }
+function subscribeChannels(callback) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            return [2 /*return*/, (0, firestore_1.onSnapshot)(_collectionRef(), function (channelData) {
+                    var channels = [];
+                    // Check that this is not the first snapshot request, but adding a new document to the listener
+                    if (channelData.docs.length !== channelData.docChanges().length) {
+                        // @ts-ignore
+                        channels = channelData.docChanges().map(function (docData) { return docData.doc; }).map(firebase_snapshot_utils_1.docWithId).map(function (doc) { return channelRecordToChannel(doc, doc.id); });
+                    }
+                    callback(channels, channelData);
+                })];
+        });
+    });
+}
+exports.subscribeChannels = subscribeChannels;
+function subscribeChannel(channelId, callback) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            return [2 /*return*/, (0, firestore_1.onSnapshot)(_docRef(channelId), function (channelData) {
+                    callback(channelData);
+                })];
+        });
+    });
+}
+exports.subscribeChannel = subscribeChannel;
+function unsubscribeChannel(unsubscribe) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            unsubscribe();
+            return [2 /*return*/];
+        });
+    });
+}
+exports.unsubscribeChannel = unsubscribeChannel;
